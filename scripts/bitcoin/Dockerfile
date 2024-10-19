@@ -2,7 +2,7 @@ FROM debian:bullseye-slim
 
 RUN useradd --system --user-group bitcoin \
   && apt-get update -y \
-  && apt-get install -y curl gnupg gosu \
+  && apt-get install -y curl gnupg gosu jq \
   && apt-get clean \
   && apt-get install vim -y \
   && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

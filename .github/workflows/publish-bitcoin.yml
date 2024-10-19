@@ -9,6 +9,8 @@ on:
   push:
     tags:
       - 'v*'
+    paths:
+      - 'scripts/bitcoin/**'
   pull_request:
     paths:
       - 'scripts/bitcoin/**'

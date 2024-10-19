@@ -55,7 +55,7 @@ echo "Starting bitcoind..."
 bitcoind -${NETWORK} -datadir="$DATA_DIR" -conf="$CONF" -rpcport="$RPC_PORT" -daemon
 
 # Allow some time for bitcoind to start
-sleep 3
+sleep 5
 
 if [[ "$NETWORK" == "regtest" ]]; then
   if [[ ! -d "${DATA_DIR}/${NETWORK}/wallets/${WALLET_NAME}" ]]; then
@@ -63,34 +63,39 @@ if [[ "$NETWORK" == "regtest" ]]; then
     bitcoin-cli -${NETWORK} -rpcuser="$RPC_USER" -rpcpassword="$RPC_PASS" createwallet "$WALLET_NAME" false false "$WALLET_PASS" false false
   fi
 
-  if [[ ! -d "${DATA_DIR}/${NETWORK}/wallets/${BTCSTAKER_WALLET_NAME}" ]]; then
-    echo "Creating a wallet for btcstaker..."
-    bitcoin-cli -${NETWORK} -rpcuser="$RPC_USER" -rpcpassword="$RPC_PASS" createwallet "$BTCSTAKER_WALLET_NAME" false false "$WALLET_PASS" false false
-  fi
+  echo "Opening ${WALLET_NAME} wallet..."
+  bitcoin-cli -${NETWORK} -rpcuser="$RPC_USER" -rpcpassword="$RPC_PASS" -rpcwallet="$WALLET_NAME" walletpassphrase "$WALLET_PASS" 10
 
   echo "Generating 110 blocks for the first coinbases to mature..."
   bitcoin-cli -${NETWORK} -rpcuser="$RPC_USER" -rpcpassword="$RPC_PASS" -rpcwallet="$WALLET_NAME" -generate 110
+fi
 
-  echo "Creating the address for btcstaker..."
-  BTCSTAKER_ADDR=$(bitcoin-cli -${NETWORK} -rpcuser="$RPC_USER" -rpcpassword="$RPC_PASS" -rpcwallet="$BTCSTAKER_WALLET_NAME" getnewaddress)
-  echo "BTCSTAKER_ADDR: $BTCSTAKER_ADDR"
+if [[ ! -d "${DATA_DIR}/${NETWORK}/wallets/${BTCSTAKER_WALLET_NAME}" ]]; then
+  echo "Creating a wallet for btcstaker..."
+  bitcoin-cli -${NETWORK} -rpcuser="$RPC_USER" -rpcpassword="$RPC_PASS" createwallet "$BTCSTAKER_WALLET_NAME" false false "$WALLET_PASS" false false
+fi
 
-  # Generate a UTXO for the btc-staker address
-  bitcoin-cli -${NETWORK} -rpcuser="$RPC_USER" -rpcpassword="$RPC_PASS" -rpcwallet="$WALLET_NAME" walletpassphrase "$WALLET_PASS" 1
-  bitcoin-cli -${NETWORK} -rpcuser="$RPC_USER" -rpcpassword="$RPC_PASS" -rpcwallet="$WALLET_NAME" sendtoaddress "$BTCSTAKER_ADDR" 10
+echo "Opening ${BTCSTAKER_WALLET_NAME} wallet..."
+bitcoin-cli -${NETWORK} -rpcuser="$RPC_USER" -rpcpassword="$RPC_PASS" -rpcwallet="$BTCSTAKER_WALLET_NAME" walletpassphrase "$WALLET_PASS" 10
+echo "Importing the private key to the wallet ${BTCSTAKER_WALLET_NAME} with the label ${BTCSTAKER_WALLET_NAME} without rescan..."
+bitcoin-cli -${NETWORK} -rpcuser="$RPC_USER" -rpcpassword="$RPC_PASS" -rpcwallet="$BTCSTAKER_WALLET_NAME" importprivkey "$BTCSTAKER_PRIVKEY" "${BTCSTAKER_WALLET_NAME}" false
 
-  # Allow some time for the wallet to catch up.
-  sleep 5
+# Allow some time for the wallet to catch up.
+sleep 5
 
+if [[ "$NETWORK" == "regtest" ]]; then
   echo "Checking balance..."
   bitcoin-cli -${NETWORK} -rpcuser="$RPC_USER" -rpcpassword="$RPC_PASS" -rpcwallet="$WALLET_NAME" getbalance
   
+  echo "Getting the imported BTC address for wallet ${BTCSTAKER_WALLET_NAME}..."
+  BTCSTAKER_ADDR=$(bitcoin-cli -${NETWORK} -rpcuser="$RPC_USER" -rpcpassword="$RPC_PASS" -rpcwallet="$BTCSTAKER_WALLET_NAME" getaddressesbylabel "${BTCSTAKER_WALLET_NAME}" | jq -r 'keys[0]')
+  echo "Imported BTC address: ${BTCSTAKER_ADDR}"
+
   echo "Generating a block every ${GENERATE_INTERVAL_SECS} seconds."
   echo "Press [CTRL+C] to stop..."
-  while true
-  do  
+  while true; do
     bitcoin-cli -${NETWORK} -rpcuser="$RPC_USER" -rpcpassword="$RPC_PASS" -rpcwallet="$WALLET_NAME" -generate 1
-    echo "Periodically send funds to btcstaker addresses..."
+    echo "Periodically send funds to the address ${BTCSTAKER_ADDR} for wallet ${BTCSTAKER_WALLET_NAME}..."
     bitcoin-cli -${NETWORK} -rpcuser="$RPC_USER" -rpcpassword="$RPC_PASS" -rpcwallet="$WALLET_NAME" walletpassphrase "$WALLET_PASS" 10
     bitcoin-cli -${NETWORK} -rpcuser="$RPC_USER" -rpcpassword="$RPC_PASS" -rpcwallet="$WALLET_NAME" sendtoaddress "$BTCSTAKER_ADDR" 10
     sleep "${GENERATE_INTERVAL_SECS}"
