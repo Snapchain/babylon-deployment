@@ -1,0 +1,26 @@
+services:
+  bitcoind:
+    image: snapchain/bitcoind:v0.26.0
+    container_name: bitcoind
+    env_file:
+      - "${PWD}/.env.bitcoin"
+    ports:
+      - "${BITCOIN_RPC_PORT:-18443}:${BITCOIN_RPC_PORT:-18443}"
+      - "${ZMQ_SEQUENCE_PORT:-29000}:${ZMQ_SEQUENCE_PORT:-29000}"
+      - "${ZMQ_RAWBLOCK_PORT:-29001}:${ZMQ_RAWBLOCK_PORT:-29001}"
+      - "${ZMQ_RAWTR_PORT:-29002}:${ZMQ_RAWTR_PORT:-29002}"
+    volumes:
+      - "bitcoin_data:/bitcoind/.bitcoin"
+      - "${PWD}/scripts/bitcoin/entrypoint.sh:/entrypoint.sh"
+    entrypoint:
+      - "/bin/bash"
+      - "/entrypoint.sh"
+    restart: always
+    networks:
+      - default
+
+volumes:
+  bitcoin_data:
+
+networks:
+  default:
