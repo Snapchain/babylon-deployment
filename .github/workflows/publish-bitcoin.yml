@@ -13,9 +13,6 @@ on:
       - 'v*'
     paths:
       - 'scripts/bitcoin/**'
-  pull_request:
-    paths:
-      - 'scripts/bitcoin/**'
 
 env:
   # Use docker.io for Docker Hub if empty

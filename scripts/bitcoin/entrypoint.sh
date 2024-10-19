@@ -92,7 +92,6 @@ if [[ "$NETWORK" == "regtest" ]]; then
   echo "Imported BTC address: ${BTCSTAKER_ADDR}"
 
   echo "Generating a block every ${GENERATE_INTERVAL_SECS} seconds."
-  echo "Press [CTRL+C] to stop..."
   while true; do
     bitcoin-cli -${NETWORK} -rpcuser="$RPC_USER" -rpcpassword="$RPC_PASS" -rpcwallet="$WALLET_NAME" -generate 1
     echo "Periodically send funds to the address ${BTCSTAKER_ADDR} for wallet ${BTCSTAKER_WALLET_NAME}..."
@@ -102,6 +101,6 @@ if [[ "$NETWORK" == "regtest" ]]; then
   done
 elif [[ "$NETWORK" == "signet" ]]; then
   # Keep the container running
-  echo "Bitcoind is running. Press CTRL+C to stop..."
+  echo "Bitcoind is running..."
   tail -f /dev/null
 fi
