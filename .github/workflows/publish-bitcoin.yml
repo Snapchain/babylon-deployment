@@ -7,10 +7,9 @@ name: publish-bitcoin
 
 on:
   push:
-    branches:
-      - '*'
     tags:
       - 'v*'
+  pull_request:
     paths:
       - 'scripts/bitcoin/**'
 
