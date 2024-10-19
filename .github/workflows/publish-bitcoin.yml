@@ -16,7 +16,7 @@ env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: docker.io
   # Remove the slash at the end of the username
-  IMAGE_NAME: ${{ secrets.DOCKER_HUB_USERNAME }}/${{ github.event.repository.name }}
+  IMAGE_NAME: ${{ secrets.DOCKER_HUB_USERNAME }}/bitcoind
 
 jobs:
   build:
@@ -62,8 +62,17 @@ jobs:
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
             type=ref,event=branch
-            type=semver,pattern={{version}}
+            type=semver,pattern=v{{version}}
             type=sha
+
+      - name: Set Docker image tag
+        id: set-tag
+        run: |
+          if [[ $GITHUB_REF == refs/pull/* ]]; then
+            echo "TAG=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
+          elif [[ $GITHUB_REF == refs/tags/* ]]; then
+            echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+          fi
 
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
@@ -73,7 +82,7 @@ jobs:
         with:
           push: true
           context: scripts/bitcoin
-          tags: ${{ steps.meta.outputs.tags }}
+          tags: ${{ steps.set-tag.outputs.TAG }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
