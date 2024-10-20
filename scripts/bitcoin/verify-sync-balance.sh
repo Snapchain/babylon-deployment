@@ -6,8 +6,8 @@ set -a
 source $(pwd)/.env.bitcoin
 set +a
 
-if [ -z "$(echo ${BTCSTAKER_WALLET_PASS})" ] || [ -z "$(echo ${BTCSTAKER_PRIVKEY})" ]; then
-    echo "Error: BTCSTAKER_WALLET_PASS or BTCSTAKER_PRIVKEY environment variable is not set"
+if [ -z "$(echo ${BTC_WALLET_PASS})" ] || [ -z "$(echo ${BTC_PRIVKEY})" ]; then
+    echo "Error: BTC_WALLET_PASS or BTC_PRIVKEY environment variable is not set"
     exit 1
 fi
 echo "Environment variables loaded successfully"
@@ -29,28 +29,28 @@ fi
 echo "Bitcoin node is synced"
 echo
 
-# Check btcstaker address
-BTCSTAKER_ADDRESS=$(docker exec bitcoind /bin/sh -c "
+# Check btc address
+BTC_ADDRESS=$(docker exec bitcoind /bin/sh -c "
     bitcoin-cli \
     -${NETWORK} \
     -rpcuser=${RPC_USER} \
     -rpcpassword=${RPC_PASS} \
-    -rpcwallet=${BTCSTAKER_WALLET_NAME} \
-    getaddressesbylabel \"${BTCSTAKER_WALLET_NAME}\"" \
+    -rpcwallet=${BTC_WALLET_NAME} \
+    getaddressesbylabel \"${BTC_WALLET_NAME}\"" \
     | jq -r 'keys[0]')
-echo "BTCStaker address: ${BTCSTAKER_ADDRESS}"
+echo "BTC address: ${BTC_ADDRESS}"
 
-# Check if btcstaker has any unspent transactions
+# Check if btc has any unspent transactions
 BALANCE_BTC=$(docker exec bitcoind /bin/sh -c "
     bitcoin-cli \
     -${NETWORK} \
     -rpcuser=${RPC_USER} \
     -rpcpassword=${RPC_PASS} \
-    -rpcwallet=${BTCSTAKER_WALLET_NAME} \
+    -rpcwallet=${BTC_WALLET_NAME} \
     listunspent" | jq -r '[.[] | .amount] | add')
 if (( $(awk -v balance="$BALANCE_BTC" 'BEGIN {print (balance < 0.01)}') )); then
-    echo "Warning: BTCStaker balance is less than 0.01 BTC. You may need to fund this address for ${NETWORK}."
+    echo "Warning: BTC balance is less than 0.01 BTC. You may need to fund this address for ${NETWORK}."
 else
-    echo "BTCStaker balance is sufficient: ${BALANCE_BTC} BTC"
+    echo "BTC balance is sufficient: ${BALANCE_BTC} BTC"
 fi
 echo
