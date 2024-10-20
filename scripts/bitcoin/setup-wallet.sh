@@ -33,6 +33,7 @@ if [[ "$NETWORK" == "regtest" ]]; then
     GENERATE_INTERVAL_SECS=600 # 10 minutes
   fi
 
+  # without it, regtest will not mine blocks
   echo "Starting block generation every $GENERATE_INTERVAL_SECS seconds in the background..."
   (
     while true; do
