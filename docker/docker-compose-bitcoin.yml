@@ -19,4 +19,4 @@ volumes:
   bitcoin_data:
 
 networks:
-  default:
+  bitcoind:
