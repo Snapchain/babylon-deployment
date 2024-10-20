@@ -1,6 +1,6 @@
 services:
   bitcoind:
-    image: snapchain/bitcoind:034f825
+    image: snapchain/bitcoind:1aa7b4b
     container_name: bitcoind
     env_file:
       - "${PWD}/.env.bitcoin"
@@ -11,11 +11,6 @@ services:
       - "${ZMQ_RAWTR_PORT:-29002}:${ZMQ_RAWTR_PORT:-29002}"
     volumes:
       - "bitcoin_data:/bitcoind/.bitcoin"
-      - "${PWD}/scripts/bitcoin/entrypoint.sh:/entrypoint.sh"
-      - "${PWD}/scripts/bitcoin/setup-wallet.sh:/setup-wallet.sh"
-    entrypoint:
-      - "/bin/bash"
-      - "/entrypoint.sh"
     restart: always
     networks:
       - default
