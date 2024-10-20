@@ -16,4 +16,7 @@ RUN set -ex \
 
 WORKDIR /bitcoind
 
-ENTRYPOINT ["bitcoind"]
+COPY entrypoint.sh /entrypoint.sh
+COPY setup-wallet.sh /setup-wallet.sh
+
+ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
