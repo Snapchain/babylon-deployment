@@ -1,6 +1,6 @@
 services:
   bitcoind:
-    image: snapchain/bitcoind:latest
+    image: snapchain/bitcoind:034f825
     container_name: bitcoind
     env_file:
       - "${PWD}/.env.bitcoin"
