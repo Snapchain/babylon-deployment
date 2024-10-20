@@ -13,7 +13,7 @@ services:
       - "bitcoin_data:/bitcoind/.bitcoin"
     restart: always
     networks:
-      - default
+      - bitcoind
 
 volumes:
   bitcoin_data:
