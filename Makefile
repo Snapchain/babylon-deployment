@@ -4,7 +4,7 @@ start-babylon:
 .PHONY: start-babylon
 
 start-bitcoin:
-	@docker compose -f docker/docker-compose-bitcoin.yml up -d
+	@./scripts/bitcoin/start.sh
 .PHONY: start-bitcoin
 
 stop-bitcoin:

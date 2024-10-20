@@ -1,6 +1,6 @@
 services:
   bitcoind:
-    image: snapchain/bitcoind:2a54e8e
+    image: snapchain/bitcoind:latest
     container_name: bitcoind
     env_file:
       - "${PWD}/.env.bitcoin"
@@ -12,6 +12,7 @@ services:
     volumes:
       - "bitcoin_data:/bitcoind/.bitcoin"
       - "${PWD}/scripts/bitcoin/entrypoint.sh:/entrypoint.sh"
+      - "${PWD}/scripts/bitcoin/setup-wallet.sh:/setup-wallet.sh"
     entrypoint:
       - "/bin/bash"
       - "/entrypoint.sh"
