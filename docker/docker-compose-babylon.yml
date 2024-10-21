@@ -6,6 +6,4 @@ eotsmanager:
     - "15825:15813"
   volumes:
     - ../.testnets/eotsmanager:/home/finality-provider/.eotsd
-  depends_on:
-    - babylondnode0
   restart: unless-stopped
