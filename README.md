@@ -35,6 +35,30 @@
     docker compose -f docker/docker-compose-bitcoin.yml logs -f bitcoind
     ```
 
+## Setup Babylon
+
+1. Copy the `.env.babylon.example` file to `.env.babylon` and set the variables
+
+    ```bash
+    cp .env.babylon.example .env.babylon
+    ```
+
+    For Babylon Euphrates 0.5.0 devnet integration, use:
+
+    ```bash
+    BITCOIN_NETWORK=signet
+    BITCOIN_RPC_PORT=38332
+    BABYLON_CHAIN_ID=euphrates-0.5.0
+    ```
+
+2. Initialize the Docker data directory
+
+    ```bash
+    ./scripts/babylon/1-init-configs-docker-volumes.sh
+    ```
+
+TODO: add more steps here...
+
 ## Troubleshooting
 
 1. BTC wallet balance null or no unspent outputs
