@@ -35,29 +35,27 @@
     docker compose -f docker/docker-compose-bitcoin.yml logs -f bitcoind
     ```
 
-## Setup Babylon
+## Setup Babylon BTC Staker
 
-1. Copy the `.env.babylon.example` file to `.env.babylon` and set the variables
+**Note**: This step requires installing `babylond` and importing the key.
 
-    ```bash
-    cp .env.babylon.example .env.babylon
-    ```
-
-    For Babylon Euphrates 0.5.0 devnet integration, use:
+0. Check if the key is imported
 
     ```bash
-    BITCOIN_NETWORK=signet
-    BITCOIN_RPC_PORT=38332
-    BABYLON_CHAIN_ID=euphrates-0.5.0
+    babylond keys list --keyring-backend test
     ```
 
-2. Initialize the Docker data directory
+1. Copy the `.env.babylon-integration.example` file to `.env.babylon-integration` and set the variables
 
     ```bash
-    ./scripts/babylon/1-init-configs-docker-volumes.sh
+    cp .env.babylon-integration.example .env.babylon-integration
     ```
 
-TODO: add more steps here...
+2. Start the Babylon BTC Staker
+
+    ```bash
+    make start-babylon-btc-staker
+    ```
 
 ## Troubleshooting
 
