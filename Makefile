@@ -16,13 +16,11 @@ verify-bitcoin-sync-balance:
 .PHONY: verify-bitcoin-sync-balance
 
 start-babylon-btc-staker:
-	@./scripts/babylon-integration/init-btc-staker-dir.sh
-	@docker compose -f docker/docker-compose-babylon-integration.yml up -d btc-staker
+	@./scripts/babylon-integration/start-btc-staker.sh
 .PHONY: start-babylon-btc-staker
 
 stop-babylon-btc-staker:
-	@docker compose -f docker/docker-compose-babylon-integration.yml down btc-staker
-	@rm -rf ${PWD}/.btc-staker
+	@./scripts/babylon-integration/stop-btc-staker.sh
 .PHONY: stop-babylon-btc-staker
 
 start-consumer-eotsmanager:
