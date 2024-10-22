@@ -1,9 +1,0 @@
-eotsmanager:
-  container_name: eotsmanager
-  image: babylonlabs/finality-provider:45a24e1f5c235a829eaeca3c3336053032ec0088
-  command: eotsd start
-  ports:
-    - "15825:15813"
-  volumes:
-    - ../.testnets/eotsmanager:/home/finality-provider/.eotsd
-  restart: unless-stopped

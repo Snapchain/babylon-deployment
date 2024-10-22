@@ -1,0 +1,18 @@
+services:
+  btc-staker:
+    container_name: btc-staker
+    # https://github.com/babylonlabs-io/btc-staker/commit/484bcb8fd9b7b0b525234d704dd049b1ef18e29f
+    # euphrates-0.5.0-rc.0
+    image: babylonlabs/btc-staker:484bcb8fd9b7b0b525234d704dd049b1ef18e29f
+    env_file:
+      - "${PWD}/.env.babylon-integration"
+    volumes:
+      - ${PWD}/.btc-staker:/home/btcstaker/.stakerd
+    ports:
+      - "15812:15812"
+    restart: unless-stopped
+    networks:
+      - babylon-integration
+
+networks:
+  babylon-integration:
