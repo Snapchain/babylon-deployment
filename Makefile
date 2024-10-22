@@ -24,3 +24,11 @@ stop-babylon-btc-staker:
 	@docker compose -f docker/docker-compose-babylon-integration.yml down btc-staker
 	@rm -rf ${PWD}/.btc-staker
 .PHONY: stop-babylon-btc-staker
+
+start-consumer-eotsmanager:
+	@./scripts/babylon-integration/init-consumer-eots-dir.sh
+.PHONY: start-consumer-eotsmanager
+
+stop-consumer-eotsmanager:
+	@rm -rf ${PWD}/.consumer-eotsmanager
+.PHONY: stop-consumer-eotsmanager

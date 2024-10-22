@@ -4,3 +4,4 @@
 .env*
 !.env.*.example
 .btc-staker
+.consumer-eotsmanager
