@@ -14,5 +14,16 @@ services:
     networks:
       - babylon-integration
 
+  consumer-eotsmanager:
+    container_name: consumer-eotsmanager
+    # https://github.com/babylonlabs-io/finality-provider/commit/45a24e1f5c235a829eaeca3c3336053032ec0088
+    image: babylonlabs/finality-provider:45a24e1f5c235a829eaeca3c3336053032ec0088
+    command: eotsd start
+    volumes:
+      - ${PWD}/.consumer-eotsmanager:/home/finality-provider/.eotsd
+    restart: unless-stopped
+    networks:
+      - babylon-integration
+
 networks:
   babylon-integration:

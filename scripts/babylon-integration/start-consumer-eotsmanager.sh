@@ -21,3 +21,18 @@ if [ ! -d "$CONSUMER_EOTS_MANAGER_DIR" ]; then
   echo "Successfully initialized $CONSUMER_EOTS_MANAGER_DIR directory"
   echo
 fi
+
+echo "Starting consumer-eotsmanager..."
+docker compose -f docker/docker-compose-babylon-integration.yml up -d consumer-eotsmanager
+
+echo "Waiting for consumer-eotsmanager to start..."
+sleep 5
+echo "Checking the docker logs for consumer-eotsmanager..."
+# This is a hardcoded check to verify if eotsmanager has started successfully.
+REQUIRED_LOG_MESSAGE="EOTS Manager Daemon is fully active"
+if ! docker compose -f docker/docker-compose-babylon-integration.yml logs consumer-eotsmanager | grep -q "$REQUIRED_LOG_MESSAGE"; then
+    echo "Error: consumer-eotsmanager failed to start"
+    exit 1
+fi
+echo "Successfully started consumer-eotsmanager"
+echo

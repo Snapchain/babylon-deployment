@@ -26,9 +26,9 @@ stop-babylon-btc-staker:
 .PHONY: stop-babylon-btc-staker
 
 start-consumer-eotsmanager:
-	@./scripts/babylon-integration/init-consumer-eots-dir.sh
+	@./scripts/babylon-integration/start-consumer-eotsmanager.sh
 .PHONY: start-consumer-eotsmanager
 
 stop-consumer-eotsmanager:
-	@rm -rf ${PWD}/.consumer-eotsmanager
+	@./scripts/babylon-integration/stop-consumer-eotsmanager.sh
 .PHONY: stop-consumer-eotsmanager
