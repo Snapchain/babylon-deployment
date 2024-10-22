@@ -38,3 +38,11 @@ start-consumer-finality-provider:
 stop-consumer-finality-provider:
 	@./scripts/babylon-integration/stop-consumer-finality-provider.sh
 .PHONY: stop-consumer-finality-provider
+
+start-finality-gadget:
+	@./scripts/babylon-integration/start-finality-gadget.sh
+.PHONY: start-finality-gadget
+
+stop-finality-gadget:
+	@./scripts/babylon-integration/stop-finality-gadget.sh
+.PHONY: stop-finality-gadget

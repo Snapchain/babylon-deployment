@@ -5,3 +5,4 @@
 !.env.*.example
 .btc-staker
 .consumer-eotsmanager
+.finality-gadget
