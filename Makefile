@@ -30,3 +30,11 @@ start-consumer-eotsmanager:
 stop-consumer-eotsmanager:
 	@./scripts/babylon-integration/stop-consumer-eotsmanager.sh
 .PHONY: stop-consumer-eotsmanager
+
+start-consumer-finality-provider:
+	@./scripts/babylon-integration/start-consumer-finality-provider.sh
+.PHONY: start-consumer-finality-provider
+
+stop-consumer-finality-provider:
+	@./scripts/babylon-integration/stop-consumer-finality-provider.sh
+.PHONY: stop-consumer-finality-provider

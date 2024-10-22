@@ -21,6 +21,23 @@ services:
     command: eotsd start
     volumes:
       - ${PWD}/.consumer-eotsmanager:/home/finality-provider/.eotsd
+    ports:
+      - "15813:15813"
+    restart: unless-stopped
+    networks:
+      - babylon-integration
+
+  consumer-finality-provider:
+    container_name: consumer-finality-provider
+    # https://github.com/babylonlabs-io/finality-provider/commit/45a24e1f5c235a829eaeca3c3336053032ec0088
+    image: babylonlabs/finality-provider:45a24e1f5c235a829eaeca3c3336053032ec0088
+    command: fpd start
+    volumes:
+      - ${PWD}/.consumer-finality-provider:/home/finality-provider/.fpd
+    ports:
+      - "12581:12581"
+    depends_on:
+      - consumer-eotsmanager
     restart: unless-stopped
     networks:
       - babylon-integration
