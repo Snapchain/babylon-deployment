@@ -1,0 +1,61 @@
+services:
+  btc-staker:
+    container_name: btc-staker
+    # https://github.com/babylonlabs-io/btc-staker/commit/484bcb8fd9b7b0b525234d704dd049b1ef18e29f
+    # euphrates-0.5.0-rc.0
+    image: babylonlabs/btc-staker:484bcb8fd9b7b0b525234d704dd049b1ef18e29f
+    env_file:
+      - "${PWD}/.env.babylon-integration"
+    volumes:
+      - ${PWD}/.btc-staker:/home/btcstaker/.stakerd
+    ports:
+      - "15812:15812"
+    restart: unless-stopped
+    networks:
+      - babylon-integration
+
+  consumer-eotsmanager:
+    container_name: consumer-eotsmanager
+    # https://github.com/babylonlabs-io/finality-provider/commit/45a24e1f5c235a829eaeca3c3336053032ec0088
+    image: babylonlabs/finality-provider:45a24e1f5c235a829eaeca3c3336053032ec0088
+    command: eotsd start
+    volumes:
+      - ${PWD}/.consumer-eotsmanager:/home/finality-provider/.eotsd
+    ports:
+      - "15813:15813"
+    restart: unless-stopped
+    networks:
+      - babylon-integration
+
+  consumer-finality-provider:
+    container_name: consumer-finality-provider
+    # https://github.com/babylonlabs-io/finality-provider/commit/45a24e1f5c235a829eaeca3c3336053032ec0088
+    image: babylonlabs/finality-provider:45a24e1f5c235a829eaeca3c3336053032ec0088
+    command: fpd start
+    volumes:
+      - ${PWD}/.consumer-finality-provider:/home/finality-provider/.fpd
+    ports:
+      - "12581:12581"
+    depends_on:
+      - consumer-eotsmanager
+    restart: unless-stopped
+    networks:
+      - babylon-integration
+
+  finality-gadget:
+    container_name: finality-gadget
+    # https://github.com/babylonlabs-io/finality-gadget/commit/37a8b1c9b2698c9967bbc060583668d6c7a1e6f9
+    image: babylonlabs/finality-gadget:37a8b1c9b2698c9967bbc060583668d6c7a1e6f9
+    command: >
+      opfgd start --cfg /home/finality-gadget/opfgd.toml
+    ports:
+      - "50051:50051"
+      - "18080:8080"
+    volumes:
+      - ${PWD}/.finality-gadget:/home/finality-gadget
+    restart: unless-stopped
+    networks:
+      - babylon-integration
+
+networks:
+  babylon-integration:
