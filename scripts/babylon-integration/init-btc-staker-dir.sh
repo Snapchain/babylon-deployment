@@ -33,17 +33,18 @@ if [ ! -d "$BTC_STAKER_DIR" ]; then
   echo "Successfully updated the conf file $BTC_STAKER_CONF"
 
   # Check if the default keyring exists
-  DEFAULT_KEY_FILE=${HOME}/.babylond/keyring-test/${BTC_STAKER_KEY}.info
-  if [ ! -f $DEFAULT_KEY_FILE ]; then
-    # echo "Creating default keyring..."
-    # babylond keys add ${BTC_STAKER_KEY} --recover --keyring-backend test
-    echo "No default keyring found in $DEFAULT_KEY_FILE"
+  # TODO: this assumes that we use test keyring backend. when we change it, we
+  # should update this.
+  STAKER_KEY_FILE=${HOME}/.babylond/keyring-test/${BTC_STAKER_KEY}.info
+  if [ ! -f $STAKER_KEY_FILE ]; then
+    echo "No staker key found in $STAKER_KEY_FILE"
     exit 1
   fi
 
   # Copy the btc-staker key to the testnet directory
   cp -R $HOME/.babylond/keyring-test $BTC_STAKER_DIR/
 
+  # TODO: we should not use 777
   chmod -R 777 $BTC_STAKER_DIR
   echo "Successfully initialized $BTC_STAKER_DIR directory"
   echo
