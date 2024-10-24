@@ -36,3 +36,8 @@ BTC_DEL_TX_HASH=$(docker exec btc-staker /bin/sh \
     | jq -r '.tx_hash')
 echo "Delegation was successful; staking tx hash is $BTC_DEL_TX_HASH"
 echo
+
+echo "Please wait for the delegation to become active."
+echo "Note: This process requires multiple BTC block confirmations and typically takes ~30 minutes."
+echo "Check the status by running: make check-btc-delegation"
+echo

@@ -48,5 +48,9 @@ stop-finality-gadget:
 .PHONY: stop-finality-gadget
 
 create-btc-delegations:
-	@./scripts/babylon-integration/create-btc-delegations.sh
+	@./scripts/babylon-integration/create-btc-delegation.sh
 .PHONY: create-btc-delegations
+
+check-btc-delegation:
+	@./scripts/babylon-integration/check-btc-delegation.sh
+.PHONY: check-btc-delegation
