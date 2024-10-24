@@ -6,16 +6,16 @@ set -a
 source $(pwd)/.env.babylon-integration
 set +a
 
+EXAMPLE_FINALITY_GADGET_CONF=$(pwd)/configs/babylon-integration/opfgd.toml
 FINALITY_GADGET_DIR=$(pwd)/.finality-gadget
-CONFIGS_DIR=$(pwd)/configs/babylon-integration
 FINALITY_GADGET_CONF=$(pwd)/.finality-gadget/opfgd.toml
 
 if [ ! -d "$FINALITY_GADGET_DIR" ]; then
   echo "Creating $FINALITY_GADGET_DIR directory..."
   mkdir -p $FINALITY_GADGET_DIR
 
-  echo "Copying $CONFIGS_DIR/opfgd.toml to $FINALITY_GADGET_CONF..."
-  cp $CONFIGS_DIR/opfgd.toml $FINALITY_GADGET_CONF
+  echo "Copying $EXAMPLE_FINALITY_GADGET_CONF to $FINALITY_GADGET_CONF..."
+  cp $EXAMPLE_FINALITY_GADGET_CONF $FINALITY_GADGET_CONF
 
   # Update the config file with environment variables
   sed -i.bak "s|\${L2_RPC_URL}|$L2_RPC_URL|g" $FINALITY_GADGET_CONF

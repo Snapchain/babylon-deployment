@@ -6,16 +6,16 @@ set -a
 source $(pwd)/.env.babylon-integration
 set +a
 
+EXAMPLE_FINALITY_PROVIDER_CONF=$(pwd)/configs/babylon-integration/consumer-fpd.conf
 CONSUMER_FINALITY_PROVIDER_DIR=$(pwd)/.consumer-finality-provider
-CONFIGS_DIR=$(pwd)/configs/babylon-integration
 FINALITY_PROVIDER_CONF=$(pwd)/.consumer-finality-provider/fpd.conf
 
 if [ ! -d "$CONSUMER_FINALITY_PROVIDER_DIR" ]; then
   echo "Creating $CONSUMER_FINALITY_PROVIDER_DIR directory..."
   mkdir -p $CONSUMER_FINALITY_PROVIDER_DIR
 
-  echo "Copying $CONFIGS_DIR/consumer-fpd.conf to $FINALITY_PROVIDER_CONF..."
-  cp $CONFIGS_DIR/consumer-fpd.conf $FINALITY_PROVIDER_CONF
+  echo "Copying $EXAMPLE_FINALITY_PROVIDER_CONF to $FINALITY_PROVIDER_CONF..."
+  cp $EXAMPLE_FINALITY_PROVIDER_CONF $FINALITY_PROVIDER_CONF
 
   # for finality provider, replace placeholders with env variables
   sed -i.bak "s|\${CONSUMER_EOTS_MANAGER_ADDRESS}|$CONSUMER_EOTS_MANAGER_ADDRESS|g" $FINALITY_PROVIDER_CONF

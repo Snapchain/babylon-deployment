@@ -6,8 +6,8 @@ set -a
 source $(pwd)/.env.babylon-integration
 set +a
 
+EXAMPLE_BTC_STAKER_CONF=$(pwd)/configs/babylon-integration/stakerd.conf
 BTC_STAKER_DIR=$(pwd)/.btc-staker
-CONFIGS_DIR=$(pwd)/configs/babylon-integration
 BTC_STAKER_CONF=$(pwd)/.btc-staker/stakerd.conf
 
 # Only run if the directory does not exist
@@ -16,7 +16,7 @@ if [ ! -d "$BTC_STAKER_DIR" ]; then
   mkdir -p $BTC_STAKER_DIR
   
   # for btc-staker, replace placeholders with env variables
-  cp $CONFIGS_DIR/stakerd.conf $BTC_STAKER_CONF
+  cp $EXAMPLE_BTC_STAKER_CONF $BTC_STAKER_CONF
   sed -i.bak "s|\${BTC_WALLET_NAME}|$BTC_WALLET_NAME|g" $BTC_STAKER_CONF
   sed -i.bak "s|\${BTC_WALLET_PASS}|$BTC_WALLET_PASS|g" $BTC_STAKER_CONF
   sed -i.bak "s|\${BITCOIN_RPC_HOST}|$BITCOIN_RPC_HOST|g" $BTC_STAKER_CONF
