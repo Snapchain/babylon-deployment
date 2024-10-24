@@ -6,6 +6,8 @@ set -a
 source $(pwd)/.env.babylon-integration
 set +a
 
+CONSUMER_EOTS_MANAGER_DIR=$(pwd)/.consumer-eotsmanager	
+CONFIGS_DIR=$(pwd)/configs/babylon-integration
 EOTS_MANAGER_CONF=$(pwd)/.consumer-eotsmanager/eotsd.conf
 
 # Only run if the directory does not exist
