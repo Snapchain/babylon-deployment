@@ -8,10 +8,16 @@ set +a
 
 EOTS_MANAGER_CONF=$(pwd)/.consumer-eotsmanager/eotsd.conf
 
-# Check if the eotsd.conf file exists
-if [ ! -f "$EOTS_MANAGER_CONF" ]; then
-  echo "Error: $EOTS_MANAGER_CONF does not exist"
-  exit 1
+# Only run if the directory does not exist
+if [ ! -d "$CONSUMER_EOTS_MANAGER_DIR" ]; then
+  echo "Creating $CONSUMER_EOTS_MANAGER_DIR directory..."
+  mkdir -p $CONSUMER_EOTS_MANAGER_DIR
+  echo "Copying $CONFIGS_DIR/consumer-eotsd.conf to $EOTS_MANAGER_CONF..."
+  cp $CONFIGS_DIR/consumer-eotsd.conf $EOTS_MANAGER_CONF
+
+  chmod -R 777 $CONSUMER_EOTS_MANAGER_DIR
+  echo "Successfully initialized $CONSUMER_EOTS_MANAGER_DIR directory"
+  echo
 fi
 
 echo "Starting consumer-eotsmanager..."
