@@ -49,3 +49,24 @@ if [ ! -d "$BTC_STAKER_DIR" ]; then
   echo "Successfully initialized $BTC_STAKER_DIR directory"
   echo
 fi
+
+echo "Starting btc-staker..."
+docker compose -f docker/docker-compose-babylon-integration.yml up -d btc-staker
+
+# Wait for the btc-staker to be ready
+echo "Waiting for the btc-staker to be ready..."
+sleep 10
+
+max_attempts=5
+attempt=0
+while ! docker exec btc-staker stakercli daemon babylon-finality-providers &>/dev/null; do
+    sleep 2
+    ((attempt++))
+    if [ $attempt -ge $max_attempts ]; then
+        echo "Timeout waiting for btc-staker to be ready."
+        exit 1
+    fi
+done
+
+echo "Babylon btc-staker is ready!"
+echo

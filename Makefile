@@ -16,13 +16,11 @@ verify-bitcoin-sync-balance:
 .PHONY: verify-bitcoin-sync-balance
 
 start-babylon-btc-staker:
-	@./scripts/babylon-integration/init-btc-staker-dir.sh
-	@docker compose -f docker/docker-compose-babylon-integration.yml up -d btc-staker
+	@./scripts/babylon-integration/start-btc-staker.sh
 .PHONY: start-babylon-btc-staker
 
 stop-babylon-btc-staker:
-	@docker compose -f docker/docker-compose-babylon-integration.yml down btc-staker
-	@rm -rf ${PWD}/.btc-staker
+	@./scripts/babylon-integration/stop-btc-staker.sh
 .PHONY: stop-babylon-btc-staker
 
 start-consumer-eotsmanager:
@@ -32,3 +30,27 @@ start-consumer-eotsmanager:
 stop-consumer-eotsmanager:
 	@./scripts/babylon-integration/stop-consumer-eotsmanager.sh
 .PHONY: stop-consumer-eotsmanager
+
+start-consumer-finality-provider:
+	@./scripts/babylon-integration/start-consumer-finality-provider.sh
+.PHONY: start-consumer-finality-provider
+
+stop-consumer-finality-provider:
+	@./scripts/babylon-integration/stop-consumer-finality-provider.sh
+.PHONY: stop-consumer-finality-provider
+
+start-finality-gadget:
+	@./scripts/babylon-integration/start-finality-gadget.sh
+.PHONY: start-finality-gadget
+
+stop-finality-gadget:
+	@./scripts/babylon-integration/stop-finality-gadget.sh
+.PHONY: stop-finality-gadget
+
+create-btc-delegation:
+	@./scripts/babylon-integration/create-btc-delegation.sh
+.PHONY: create-btc-delegation
+
+check-btc-delegation:
+	@./scripts/babylon-integration/check-btc-delegation.sh
+.PHONY: check-btc-delegation

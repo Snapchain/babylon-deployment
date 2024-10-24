@@ -1,0 +1,12 @@
+L2RPCHost = "${L2_RPC_URL}"
+BitcoinRPCHost = "${BITCOIN_RPC_HOST}"
+BitcoinRPCUser = "${BITCOIN_RPC_USER}"
+BitcoinRPCPass = "${BITCOIN_RPC_PASS}"
+BitcoinDisableTLS = true
+DBFilePath = "/home/finality-gadget/data.db"
+FGContractAddress = "${FINALITY_GADGET_ADDRESS}"
+BBNChainID = "${BABYLON_CHAIN_ID}"
+BBNRPCAddress = "${BABYLON_RPC_URL}"
+GRPCListener = "0.0.0.0:50051"
+HTTPListener = "0.0.0.0:8080"
+PollInterval = "10s"
