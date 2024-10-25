@@ -35,6 +35,10 @@ start-consumer-finality-provider:
 	@./scripts/babylon-integration/start-consumer-finality-provider.sh
 .PHONY: start-consumer-finality-provider
 
+register-op-consumer-fp:
+	@./scripts/babylon-integration/register-op-consumer-fp.sh
+.PHONY: register-op-consumer-fp
+
 stop-consumer-finality-provider:
 	@./scripts/babylon-integration/stop-consumer-finality-provider.sh
 .PHONY: stop-consumer-finality-provider
@@ -46,3 +50,26 @@ start-finality-gadget:
 stop-finality-gadget:
 	@./scripts/babylon-integration/stop-finality-gadget.sh
 .PHONY: stop-finality-gadget
+
+create-btc-delegation:
+	@./scripts/babylon-integration/create-btc-delegation.sh
+.PHONY: create-btc-delegation
+
+check-btc-delegation:
+	@./scripts/babylon-integration/check-btc-delegation.sh
+.PHONY: check-btc-delegation
+
+restart-finality-gadget:
+	@docker compose -f docker/docker-compose-babylon-integration.yml stop finality-gadget
+	@docker compose -f docker/docker-compose-babylon-integration.yml up -d finality-gadget
+.PHONY: restart-finality-gadget
+
+restart-babylon-btc-staker:
+	@docker compose -f docker/docker-compose-babylon-integration.yml stop btc-staker
+	@docker compose -f docker/docker-compose-babylon-integration.yml up -d btc-staker
+.PHONY: restart-babylon-btc-staker
+
+restart-consumer-finality-provider:
+	@docker compose -f docker/docker-compose-babylon-integration.yml stop consumer-finality-provider
+	@docker compose -f docker/docker-compose-babylon-integration.yml up -d consumer-finality-provider
+.PHONY: restart-consumer-finality-provider
