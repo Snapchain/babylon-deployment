@@ -34,22 +34,31 @@
     ```bash
     docker compose -f docker/docker-compose-bitcoin.yml logs -f bitcoind
     ```
+## Consumer Chain Integration to Babylon
 
-## Setup Babylon BTC Staker
+**Prerequisite**:
+1. install `babylond`
 
-**Note**: This step requires installing `babylond` and importing the key.
+2. import existing or create new Babylon key
 
-0. Check if the key is imported
+3. Check if the key is there
 
     ```bash
     babylond keys list --keyring-backend test
     ```
+
+4. fund the Babylon key from the faucet
+
+### Deployment
 
 1. Copy the `.env.babylon-integration.example` file to `.env.babylon-integration` and set the variables
 
     ```bash
     cp .env.babylon-integration.example .env.babylon-integration
     ```
+
+    - `BITCOIN_NETWORK` can be either `regtest` or `signet`
+    - ... (TODO: add more details here)
 
 2. Start the Babylon BTC Staker
 
