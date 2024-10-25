@@ -3,6 +3,8 @@ services:
   deploy-cw-contract:
     container_name: deploy-cw-contract
     image: snapchain/deploy-cw-contract:latest
+    env_file:
+      - "${PWD}/.env.deploy-cw-contract"
 
   btc-staker:
     container_name: btc-staker

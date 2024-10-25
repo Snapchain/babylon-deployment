@@ -79,6 +79,10 @@ restart-consumer-eotsmanager:
 	@docker compose -f docker/docker-compose-babylon-integration.yml up -d consumer-eotsmanager
 .PHONY: restart-consumer-eotsmanager
 
+build-deploy-cw-contract-image:
+	@./scripts/deploy-cw-contract/build-docker-image.sh
+.PHONY: build-deploy-cw-contract-image
+
 deploy-cw-contract:
 	@docker compose -f docker/docker-compose-babylon-integration.yml up deploy-cw-contract
 .PHONY: deploy-cw-contract

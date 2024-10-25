@@ -47,9 +47,5 @@ RUN rm -f /tmp/go.mod
 COPY --from=build-env /babylon/build/babylond /bin/babylond
 
 COPY entrypoint.sh /entrypoint.sh
-COPY env_euphrates.sh /env_euphrates.sh
-COPY snapchainKey.example /snapchainKey
-COPY import_key.sh /import_key.sh
-COPY init.sh /root/init.sh
 
 ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
