@@ -59,14 +59,13 @@ services:
 
   finality-explorer:
     container_name: finality-explorer
-    image: snapchain/finality-explorer:latest
+    # https://github.com/Snapchain/finality-explorer/commit/88674f3c2260cb2ac115bcafa44307ea44a4e85b
+    image: snapchain/finality-explorer:sha-88674f3
     ports:
       - "13000:3000"
     env_file:
       - "${PWD}/.env.babylon-integration"
     environment:
-      - NODE_ENV=production
-      - NEXT_TELEMETRY_DISABLED=1
       - NEXT_PUBLIC_FINALITY_GADGET_API_URL=${NEXT_PUBLIC_FINALITY_GADGET_API_URL}
     restart: unless-stopped
 
