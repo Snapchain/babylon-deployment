@@ -8,4 +8,4 @@ echo
 # Deploy the contract
 echo "Deploying the contract..."
 ./deploy-cw-contract.sh
-echo "Successfully deployed op-finality-gadget contract."
+echo "Successfully deployed $CONTRACT_LABEL contract."
