@@ -51,6 +51,14 @@ stop-finality-gadget:
 	@./scripts/babylon-integration/stop-finality-gadget.sh
 .PHONY: stop-finality-gadget
 
+start-finality-explorer:
+	@./scripts/babylon-integration/start-finality-explorer.sh
+.PHONY: start-finality-explorer
+
+stop-finality-explorer:
+	@./scripts/babylon-integration/stop-finality-explorer.sh
+.PHONY: stop-finality-explorer
+
 create-btc-delegation:
 	@./scripts/babylon-integration/create-btc-delegation.sh
 .PHONY: create-btc-delegation
