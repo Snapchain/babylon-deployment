@@ -28,7 +28,7 @@ RUN LEDGER_ENABLED=$LEDGER_ENABLED \
 
 FROM debian:bookworm-slim
 
-RUN apt-get update && apt-get install -y wget bash
+RUN apt-get update && apt-get install -y wget bash curl unzip jq
 
 # Label should match your github repo
 LABEL org.opencontainers.image.source="https://github.com/babylonlabs-io/babylond:${VERSION}"
@@ -47,5 +47,6 @@ RUN rm -f /tmp/go.mod
 COPY --from=build-env /babylon/build/babylond /bin/babylond
 
 COPY entrypoint.sh /entrypoint.sh
+COPY deploy-cw-contract.sh /deploy-cw-contract.sh
 
 ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]

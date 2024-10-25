@@ -84,5 +84,5 @@ build-deploy-cw-contract-image:
 .PHONY: build-deploy-cw-contract-image
 
 deploy-cw-contract:
-	@docker compose -f docker/docker-compose-babylon-integration.yml up deploy-cw-contract
+	@docker compose -f docker/docker-compose-babylon-integration.yml up -d deploy-cw-contract
 .PHONY: deploy-cw-contract
