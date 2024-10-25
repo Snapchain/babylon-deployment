@@ -1,4 +1,9 @@
 services:
+  # This is a one-off container just for deploying cw contract
+  deploy-cw-contract:
+    container_name: deploy-cw-contract
+    image: snapchain/deploy-cw-contract:latest
+
   btc-staker:
     container_name: btc-staker
     # https://github.com/babylonlabs-io/btc-staker/commit/484bcb8fd9b7b0b525234d704dd049b1ef18e29f

@@ -1,18 +1,50 @@
-FROM debian:bullseye-slim
+FROM golang:1.22 AS build-env
 
-RUN apt-get update -y \
-  && apt-get install -y curl zip git jq build-essential \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* 
+# Version to build. Default is empty
+ARG VERSION
+ARG BUILD_TAGS=""
+ARG LEDGER_ENABLED="false"
+ARG COSMOS_BUILD_OPTIONS=""
 
-RUN curl -SLO https://go.dev/dl/go1.22.7.linux-amd64.tar.gz \
-  && rm -rf /usr/local/go \
-  && tar -C /usr/local -xzf go1.22.7.linux-amd64.tar.gz \
-  && export PATH=$PATH:/usr/local/go/bin
+WORKDIR /babylon
 
-ENV PATH=$PATH:/usr/local/go/bin:/root/go/bin
+# Clone the Babylon repo
+RUN git clone https://github.com/babylonlabs-io/babylon.git .
 
-WORKDIR /babylond
+# Checkout the correct version
+RUN if [ -n "${VERSION}" ]; then \
+      git checkout ${VERSION}; \
+    fi
+
+# Cache mod dependencies
+RUN go mod download
+
+# Build the Babylon binary
+RUN LEDGER_ENABLED=$LEDGER_ENABLED \
+    BUILD_TAGS=$BUILD_TAGS \
+    COSMOS_BUILD_OPTIONS=$COSMOS_BUILD_OPTIONS \
+    LINK_STATICALLY=false \
+    make build
+
+FROM debian:bookworm-slim
+
+RUN apt-get update && apt-get install -y wget bash
+
+# Label should match your github repo
+LABEL org.opencontainers.image.source="https://github.com/babylonlabs-io/babylond:${VERSION}"
+
+# Install libraries
+# Cosmwasm - Download correct libwasmvm version
+COPY --from=build-env /babylon/go.mod /tmp
+RUN WASMVM_VERSION=$(grep github.com/CosmWasm/wasmvm /tmp/go.mod | cut -d' ' -f2) && \
+    wget https://github.com/CosmWasm/wasmvm/releases/download/$WASMVM_VERSION/libwasmvm.$(uname -m).so \
+    -O /lib/libwasmvm.$(uname -m).so && \
+    # verify checksum
+    wget https://github.com/CosmWasm/wasmvm/releases/download/$WASMVM_VERSION/checksums.txt -O /tmp/checksums.txt && \
+    sha256sum /lib/libwasmvm.$(uname -m).so | grep $(cat /tmp/checksums.txt | grep libwasmvm.$(uname -m) | cut -d ' ' -f 1)
+RUN rm -f /tmp/go.mod
+
+COPY --from=build-env /babylon/build/babylond /bin/babylond
 
 COPY entrypoint.sh /entrypoint.sh
 COPY env_euphrates.sh /env_euphrates.sh

@@ -1,15 +1,17 @@
 #!/bin/bash
 set -euo pipefail
 
-cd /
-. ./env_euphrates.sh
-echo "Starting babylond..."
+echo "Printing babylond version..."
+babylond version
+echo
 
-./import_key.sh
-echo "import key done"
+# cd /
+# . ./env_euphrates.sh
+# echo "Starting babylond..."
 
-cd $HOME
-./init.sh
-echo "init done"
+# ./import_key.sh
+# echo "import key done"
 
-
+# cd $HOME
+# ./init.sh
+# echo "init done"

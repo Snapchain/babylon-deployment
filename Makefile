@@ -78,3 +78,7 @@ restart-consumer-eotsmanager:
 	@docker compose -f docker/docker-compose-babylon-integration.yml stop consumer-eotsmanager
 	@docker compose -f docker/docker-compose-babylon-integration.yml up -d consumer-eotsmanager
 .PHONY: restart-consumer-eotsmanager
+
+deploy-cw-contract:
+	@docker compose -f docker/docker-compose-babylon-integration.yml up deploy-cw-contract
+.PHONY: deploy-cw-contract
