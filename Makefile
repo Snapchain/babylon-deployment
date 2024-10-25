@@ -54,3 +54,18 @@ create-btc-delegation:
 check-btc-delegation:
 	@./scripts/babylon-integration/check-btc-delegation.sh
 .PHONY: check-btc-delegation
+
+restart-finality-gadget:
+	@docker compose -f docker/docker-compose-babylon-integration.yml stop finality-gadget
+	@docker compose -f docker/docker-compose-babylon-integration.yml up -d finality-gadget
+.PHONY: restart-finality-gadget
+
+restart-babylon-btc-staker:
+	@docker compose -f docker/docker-compose-babylon-integration.yml stop btc-staker
+	@docker compose -f docker/docker-compose-babylon-integration.yml up -d btc-staker
+.PHONY: restart-babylon-btc-staker
+
+restart-consumer-finality-provider:
+	@docker compose -f docker/docker-compose-babylon-integration.yml stop consumer-finality-provider
+	@docker compose -f docker/docker-compose-babylon-integration.yml up -d consumer-finality-provider
+.PHONY: restart-consumer-finality-provider
