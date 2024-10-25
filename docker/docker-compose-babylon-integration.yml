@@ -62,13 +62,13 @@ services:
     image: snapchain/finality-explorer:latest
     ports:
       - "13000:3000"
+    env_file:
+      - "${PWD}/.env.babylon-integration"
     environment:
       - NODE_ENV=production
       - NEXT_TELEMETRY_DISABLED=1
-      - NEXT_PUBLIC_FINALITY_GADGET_API_URL=http://finality-gadget:8080
+      - NEXT_PUBLIC_FINALITY_GADGET_API_URL=${NEXT_PUBLIC_FINALITY_GADGET_API_URL}
     restart: unless-stopped
-    networks:
-      - babylon-integration
 
 networks:
   babylon-integration:
