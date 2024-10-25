@@ -60,7 +60,7 @@ services:
   finality-explorer:
     container_name: finality-explorer
     # https://github.com/Snapchain/finality-explorer/commit/88674f3c2260cb2ac115bcafa44307ea44a4e85b
-    image: snapchain/finality-explorer:sha-518cd0d
+    image: snapchain/finality-explorer:sha-f15c9ef
     ports:
       - "13000:3000"
     env_file:
