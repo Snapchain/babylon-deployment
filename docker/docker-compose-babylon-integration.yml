@@ -2,7 +2,7 @@ services:
   # This is a one-off container just for deploying cw contract
   deploy-cw-contract:
     container_name: deploy-cw-contract
-    image: snapchain/deploy-cw-contract:latest
+    image: snapchain/deploy-cw-contract:7c9aa71
     env_file:
       - "${PWD}/.env.deploy-cw-contract"
 
@@ -60,6 +60,19 @@ services:
       - "18080:8080"
     volumes:
       - ${PWD}/.finality-gadget:/home/finality-gadget
+    restart: unless-stopped
+    networks:
+      - babylon-integration
+
+  finality-explorer:
+    container_name: finality-explorer
+    image: snapchain/finality-explorer:latest
+    ports:
+      - "13000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
+      - NEXT_PUBLIC_FINALITY_GADGET_API_URL=http://finality-gadget:8080
     restart: unless-stopped
     networks:
       - babylon-integration
