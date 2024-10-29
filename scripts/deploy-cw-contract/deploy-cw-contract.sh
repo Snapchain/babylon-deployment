@@ -1,5 +1,37 @@
 #!/bin/bash
-set -euo pipefail
+set -uo pipefail
+
+# Function to handle pending transactions
+wait_for_tx() {
+    local tx_hash=$1
+    local max_attempts=$2
+    local interval=$3
+    local attempt=0
+    
+    while [ $attempt -lt $max_attempts ]; do
+        # Query with explicit error handling
+        if output=$(babylond query tx "$tx_hash" \
+            --chain-id "$BABYLON_CHAIN_ID" \
+            --node "$BABYLOND_NODE" -o json 2>&1); then
+            echo "Transaction found"
+            return 0
+        else
+            # Command failed, check if it's because tx is pending
+            if echo "$output" | grep -q "Internal error: tx ($tx_hash) not found"; then
+                echo "Transaction pending..."
+                sleep "$interval"
+                ((attempt++))
+                continue
+            fi
+            # Other error occurred
+            echo "Query failed: $output"
+            return 1
+        fi
+    done
+    
+    echo "Timeout after $max_attempts attempts waiting for transaction $tx_hash to be available."
+    return 1
+}
 
 # TODO: don't use test keyring backend in production
 # Import the key
@@ -49,33 +81,21 @@ echo "Stored contract tx hash: $STORE_TX_HASH"
 
 # Query the code ID
 echo "Querying code ID..."
-max_attempts=10
-attempt=0
-while true; do
-    CODE=$(babylond query tx $STORE_TX_HASH \
-        --chain-id $BABYLON_CHAIN_ID \
-        --node $BABYLOND_NODE -o json \
-        | jq -r '.events[] | select(.type == "store_code") | .attributes[] | select(.key == "code_id") | .value' 2>/dev/null)
-    
-    if [[ -n "$CODE" ]]; then
-        echo "Code ID: $CODE"
-        break
-    fi
-
-    sleep 3
-    ((attempt++))
-    if [ $attempt -ge $max_attempts ]; then
-        echo "Timeout waiting for code ID to be available."
-        exit 1
-    fi
-done
+if wait_for_tx "$STORE_TX_HASH" 10 3; then
+    CODE=$(babylond query tx "$STORE_TX_HASH" \
+        --chain-id "$BABYLON_CHAIN_ID" \
+        --node "$BABYLOND_NODE" -o json \
+        | jq -r '.events[] | select(.type == "store_code") | .attributes[] | select(.key == "code_id") | .value')
+    echo "Code ID: $CODE"
+else
+    echo "Failed to get code ID"
+    exit 1
+fi
 
 echo "Instantiating contract..."
 # Set the contract admin address default to $DEPLOYER_ADDRESS if it is not passed in from the ENV file
-if [ -z "$CONTRACT_ADMIN_ADDRESS" ]; then
-    CONTRACT_ADMIN_ADDRESS=$DEPLOYER_ADDRESS
-    echo "Contract admin address: $CONTRACT_ADMIN_ADDRESS"
-fi
+CONTRACT_ADMIN_ADDRESS=${CONTRACT_ADMIN_ADDRESS:-$DEPLOYER_ADDRESS}
+echo "Contract admin address: $CONTRACT_ADMIN_ADDRESS"
 
 INSTANTIATE_MSG_JSON=$(printf '{"admin":"%s","consumer_id":"%s","is_enabled":%s}' \
     "$CONTRACT_ADMIN_ADDRESS" "$CONSUMER_ID" "$IS_ENABLED")
@@ -97,26 +117,16 @@ echo "Deployed contract tx hash: $DEPLOY_TX_HASH"
 
 # Query the contract address
 echo "Querying contract address..."
-max_attempts=10
-attempt=0
-while true; do
-    CONTRACT_ADDR=$(babylond query tx $DEPLOY_TX_HASH \
-        --chain-id $BABYLON_CHAIN_ID \
-        --node $BABYLOND_NODE -o json \
-        | jq -r '.events[] | select(.type == "instantiate") | .attributes[] | select(.key == "_contract_address") | .value' 2>/dev/null)
-
-    if [[ -n "$CONTRACT_ADDR" ]]; then
-        echo "Contract address: $CONTRACT_ADDR"
-        break
-    fi
-
-    sleep 3
-    ((attempt++))
-    if [ $attempt -ge $max_attempts ]; then
-        echo "Timeout waiting for contract address to be available."
-        exit 1
-    fi
-done
+if wait_for_tx "$DEPLOY_TX_HASH" 10 3; then
+    CONTRACT_ADDR=$(babylond query tx "$DEPLOY_TX_HASH" \
+        --chain-id "$BABYLON_CHAIN_ID" \
+        --node "$BABYLOND_NODE" -o json \
+        | jq -r '.events[] | select(.type == "instantiate") | .attributes[] | select(.key == "_contract_address") | .value')
+    echo "Contract address: $CONTRACT_ADDR"
+else
+    echo "Failed to get contract address"
+    exit 1
+fi
 
 # Query the contract config
 echo "Querying contract config..."
