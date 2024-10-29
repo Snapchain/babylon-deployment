@@ -72,7 +72,7 @@ echo "Funding account $CONSUMER_FINALITY_PROVIDER_KEY..."
 FUND_TX_HASH=$(babylond tx bank send \
     ${PREFUNDED_ADDRESS} \
     ${CONSUMER_FP_ADDRESS} \
-    ${CONSUMER_FP_FUND_AMOUNT} \
+    "${CONSUMER_FP_FUND_AMOUNT}ubbn" \
     --chain-id $BABYLON_CHAIN_ID \
     --keyring-backend test \
     --gas auto \
