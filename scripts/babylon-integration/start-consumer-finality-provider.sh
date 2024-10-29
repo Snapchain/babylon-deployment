@@ -61,7 +61,7 @@ BABYLON_PREFUNDED_KEY_BALANCE=$(babylond query bank balances ${PREFUNDED_ADDRESS
     --chain-id $BABYLON_CHAIN_ID \
     --node $BABYLON_RPC_URL \
     --output json | jq '.balances[0].amount')
-if [ "$BABYLON_PREFUNDED_KEY_BALANCE" < "$CONSUMER_FP_FUND_AMOUNT" ]; then
+if [ "$BABYLON_PREFUNDED_KEY_BALANCE" -lt "$CONSUMER_FP_FUND_AMOUNT" ]; then
     echo "Babylon prefunded key balance is less than the funding amount"
     exit 1
 fi
