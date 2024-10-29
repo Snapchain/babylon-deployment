@@ -7,6 +7,8 @@ name: publish-deploy-contract
 
 on:
   push:
+    branches:
+      - main
     paths:
       - 'scripts/deploy-cw-contract/**'
 
