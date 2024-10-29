@@ -87,6 +87,6 @@ deploy-cw-contract:
 	@docker logs -f deploy-cw-contract
 .PHONY: deploy-cw-contract
 
-install-babylond-and-import-default-account:
-	@./scripts/babylon-integration/install-babylond.sh
-.PHONY: install-babylond-and-import-default-account
+install-babylond-and-import-key:
+	@./scripts/babylon-integration/install-babylond-and-import-key.sh
+.PHONY: install-babylond-and-import-key
