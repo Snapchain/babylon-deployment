@@ -5,6 +5,8 @@ services:
     image: snapchain/deploy-cw-contract:7c9aa71
     env_file:
       - "${PWD}/.env.deploy-cw-contract"
+    profiles:
+      - cw-contract # isolates service so other containers can start without .env.deploy-cw-contract
 
   btc-staker:
     container_name: btc-staker
