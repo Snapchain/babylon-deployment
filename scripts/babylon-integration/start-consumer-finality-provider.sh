@@ -74,6 +74,7 @@ FUND_TX_HASH=$(babylond tx bank send \
     ${CONSUMER_FP_ADDRESS} \
     "${CONSUMER_FP_FUND_AMOUNT}ubbn" \
     --chain-id $BABYLON_CHAIN_ID \
+    --node $BABYLON_RPC_URL \
     --keyring-backend test \
     --gas auto \
     --gas-adjustment 1.5 \
