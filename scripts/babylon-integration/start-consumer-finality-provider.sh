@@ -43,6 +43,7 @@ if [ ! -d "$CONSUMER_FINALITY_PROVIDER_DIR" ]; then
       echo "Generated consumer-finality-provider key $CONSUMER_FINALITY_PROVIDER_KEY"
   fi
   echo
+  CONSUMER_FP_ADDRESS=$(babylond keys show $CONSUMER_FINALITY_PROVIDER_KEY --keyring-backend test --keyring-dir $CONSUMER_FP_KEYRING_DIR --output json | jq -r '.address')
 
   # Copy the finality provider key to the mounted .consumer-finality-provider directory
   cp -R $CONSUMER_FP_KEYRING_DIR/keyring-test $CONSUMER_FINALITY_PROVIDER_DIR/
@@ -60,7 +61,7 @@ BABYLON_PREFUNDED_KEY_BALANCE=$(babylond query bank balances ${PREFUNDED_ADDRESS
     --chain-id $BABYLON_CHAIN_ID \
     --node $BABYLON_RPC_URL \
     --output json | jq '.balances[0].amount')
-if [ $BABYLON_PREFUNDED_KEY_BALANCE -lt $CONSUMER_FP_FUND_AMOUNT ]; then
+if [ "$(echo "$BABYLON_PREFUNDED_KEY_BALANCE < $CONSUMER_FP_FUND_AMOUNT" | bc)" -eq 1 ]; then
     echo "Babylon prefunded key balance is less than the funding amount"
     exit 1
 fi
@@ -69,8 +70,8 @@ echo "Babylon prefunded key balance: $BABYLON_PREFUNDED_KEY_BALANCE"
 # fund the consumer-finality-provider account
 echo "Funding account $CONSUMER_FINALITY_PROVIDER_KEY..."
 FUND_TX_HASH=$(babylond tx bank send \
-    ${BABYLON_PREFUNDED_KEY} \
-    ${CONSUMER_FINALITY_PROVIDER_KEY} \
+    ${PREFUNDED_ADDRESS} \
+    ${CONSUMER_FP_ADDRESS} \
     ${CONSUMER_FP_FUND_AMOUNT} \
     --chain-id $BABYLON_CHAIN_ID \
     --keyring-backend test \
