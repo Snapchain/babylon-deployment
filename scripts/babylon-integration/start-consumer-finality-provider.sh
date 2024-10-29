@@ -30,19 +30,25 @@ if [ ! -d "$CONSUMER_FINALITY_PROVIDER_DIR" ]; then
   rm $CONSUMER_FINALITY_PROVIDER_DIR/fpd.conf.bak
   echo "Successfully updated the conf file $FINALITY_PROVIDER_CONF"
 
-  # Check if the default keyring exists
-  DEFAULT_KEY_FILE=${HOME}/.babylond/keyring-test/${CONSUMER_FINALITY_PROVIDER_KEY}.info
-  if [ ! -f $DEFAULT_KEY_FILE ]; then
-    echo "No default keyring found in $DEFAULT_KEY_FILE"
-    exit 1
+  # Create new Babylon account for the finality provider
+  CONSUMER_FP_KEYRING_DIR=$HOME/.babylond/${CONSUMER_FINALITY_PROVIDER_KEY}
+  if ! $HOME/babylond keys show $CONSUMER_FINALITY_PROVIDER_KEY --keyring-dir $CONSUMER_FP_KEYRING_DIR --keyring-backend test &> /dev/null; then
+      echo "Creating keyring directory $CONSUMER_FP_KEYRING_DIR"
+      mkdir -p $CONSUMER_FP_KEYRING_DIR
+      echo "Creating key $CONSUMER_FINALITY_PROVIDER_KEY..."
+      $HOME/babylond keys add $CONSUMER_FINALITY_PROVIDER_KEY \
+          --keyring-backend test \
+          --keyring-dir $CONSUMER_FP_KEYRING_DIR \
+          --output json > $CONSUMER_FINALITY_PROVIDER_DIR/${CONSUMER_FINALITY_PROVIDER_KEY}.json
+      echo "Generated consumer-finality-provider key $CONSUMER_FINALITY_PROVIDER_KEY"
   fi
+  echo
 
   # Copy the finality provider key to the mounted .consumer-finality-provider directory
-  # TODO: no need to copy the entire repo. We can just copy the key b/c there 
-  # can be multiple keys in the keyring dir
-  cp -R $HOME/.babylond/keyring-test $CONSUMER_FINALITY_PROVIDER_DIR/
+  cp -R $CONSUMER_FP_KEYRING_DIR/keyring-test $CONSUMER_FINALITY_PROVIDER_DIR/
+  echo "Copied the generated key to the $CONSUMER_FINALITY_PROVIDER_DIR directory"
 
-  chmod -R 777 $CONSUMER_FINALITY_PROVIDER_DIR
+  chmod -R 750 $CONSUMER_FINALITY_PROVIDER_DIR
   echo "Successfully initialized $CONSUMER_FINALITY_PROVIDER_DIR directory"
   echo
 fi

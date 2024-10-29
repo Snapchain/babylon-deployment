@@ -1,8 +1,3 @@
-start-babylon:
-	@./scripts/babylon-devnet/init-testnets-dir.sh
-	@docker compose -f docker/docker-compose-babylon.yml up -d
-.PHONY: start-babylon
-
 start-bitcoin:
 	@./scripts/bitcoin/start.sh
 .PHONY: start-bitcoin
@@ -86,3 +81,7 @@ build-deploy-cw-contract-image:
 deploy-cw-contract:
 	@docker compose -f docker/docker-compose-babylon-integration.yml up -d deploy-cw-contract
 .PHONY: deploy-cw-contract
+
+install-babylond:
+	@./scripts/babylon-integration/install-babylond.sh
+.PHONY: install-babylond

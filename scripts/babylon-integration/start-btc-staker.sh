@@ -32,20 +32,27 @@ if [ ! -d "$BTC_STAKER_DIR" ]; then
   rm $BTC_STAKER_DIR/stakerd.conf.bak
   echo "Successfully updated the conf file $BTC_STAKER_CONF"
 
-  # Check if the default keyring exists
   # TODO: this assumes that we use test keyring backend. when we change it, we
   # should update this.
-  STAKER_KEY_FILE=${HOME}/.babylond/keyring-test/${BTC_STAKER_KEY}.info
-  if [ ! -f $STAKER_KEY_FILE ]; then
-    echo "No staker key found in $STAKER_KEY_FILE"
-    exit 1
+  # Import the existing Babylon account
+  BTC_STAKER_KEYRING_DIR=$HOME/.babylond/$BTC_STAKER_KEY
+  if ! $HOME/babylond keys show $BTC_STAKER_KEY --keyring-dir $BTC_STAKER_KEYRING_DIR --keyring-backend test &> /dev/null; then
+      echo "Creating keyring directory $BTC_STAKER_KEYRING_DIR"
+      mkdir -p $BTC_STAKER_KEYRING_DIR
+      echo "Importing key $BTC_STAKER_KEY..."
+      $HOME/babylond keys add $BTC_STAKER_KEY \
+          --keyring-backend test \
+          --keyring-dir $BTC_STAKER_KEYRING_DIR \
+          --recover <<< "$BTC_STAKER_KEY_MNEMONIC"
+      echo "Imported btc-staker key $BTC_STAKER_KEY"
   fi
+  echo
 
   # Copy the btc-staker key to the mounted .btc-staker directory
-  cp -R $HOME/.babylond/keyring-test $BTC_STAKER_DIR/
+  cp -R $BTC_STAKER_KEYRING_DIR/keyring-test $BTC_STAKER_DIR/
+  echo "Copied the imported key to the $BTC_STAKER_DIR directory"
 
-  # TODO: we should not use 777
-  chmod -R 777 $BTC_STAKER_DIR
+  chmod -R 750 $BTC_STAKER_DIR
   echo "Successfully initialized $BTC_STAKER_DIR directory"
   echo
 fi
