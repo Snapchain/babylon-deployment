@@ -49,7 +49,7 @@ if [ ! -d "$CONSUMER_FINALITY_PROVIDER_DIR" ]; then
   cp -R $CONSUMER_FP_KEYRING_DIR/keyring-test $CONSUMER_FINALITY_PROVIDER_DIR/
   echo "Copied the generated key to the $CONSUMER_FINALITY_PROVIDER_DIR directory"
 
-  chmod -R 750 $CONSUMER_FINALITY_PROVIDER_DIR
+  chmod -R 777 $CONSUMER_FINALITY_PROVIDER_DIR
   echo "Successfully initialized $CONSUMER_FINALITY_PROVIDER_DIR directory"
   echo
 fi
