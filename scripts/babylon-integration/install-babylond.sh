@@ -6,7 +6,7 @@ set -a
 source $(pwd)/.env.babylon-integration
 set +a
 
-BABYLOND_PATH=$HOME/babylond
+BABYLOND_PATH=/usr/local/bin/babylond
 if [ ! -f "$BABYLOND_PATH" ]; then
     # Download the babylond binary
     # TODO: use Babylon repo instead of Snapchain
@@ -18,9 +18,18 @@ if [ ! -f "$BABYLOND_PATH" ]; then
         echo "Error: babylond binary not found at $BABYLOND_FILE"
         exit 1
     fi
-    mv $BABYLOND_FILE $BABYLOND_PATH
+    sudo mv $BABYLOND_FILE $BABYLOND_PATH
     # Make the babylond binary executable
-    chmod +x $BABYLOND_PATH
-    echo "Babylon version: $($BABYLOND_PATH version)"
-    echo
+    sudo chmod +x $BABYLOND_PATH
+    echo "Babylon version: $(babylond version)"
 fi
+echo
+
+if ! babylond keys show $BABYLON_PREFUNDED_KEY --keyring-backend test &> /dev/null; then
+    echo "Importing babylon prefunded key $BABYLON_PREFUNDED_KEY..."
+    babylond keys add $BABYLON_PREFUNDED_KEY \
+        --keyring-backend test \
+        --recover <<< "$BABYLON_PREFUNDED_KEY_MNEMONIC"
+    echo "Imported babylon prefunded key $BABYLON_PREFUNDED_KEY"
+fi
+echo
