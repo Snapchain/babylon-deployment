@@ -47,16 +47,31 @@ STORE_TX_HASH=$(babylond tx wasm store $CONTRACT_PATH \
     | jq -r '.txhash')
 echo "Stored contract tx hash: $STORE_TX_HASH"
 
-sleep 30
 # Query the code ID
-CODE=$(babylond query tx $STORE_TX_HASH \
-    --chain-id $BABYLON_CHAIN_ID \
-    --node $BABYLOND_NODE -o json \
-    | jq -r '.events[] | select(.type == "store_code") | .attributes[] | select(.key == "code_id") | .value')
-echo "Code ID: $CODE"
+echo "Querying code ID..."
+max_attempts=10
+attempt=0
+while true; do
+    CODE=$(babylond query tx $STORE_TX_HASH \
+        --chain-id $BABYLON_CHAIN_ID \
+        --node $BABYLOND_NODE -o json \
+        | jq -r '.events[] | select(.type == "store_code") | .attributes[] | select(.key == "code_id") | .value' 2>/dev/null)
+    
+    if [[ -n "$CODE" ]]; then
+        echo "Code ID: $CODE"
+        break
+    fi
+
+    sleep 3
+    ((attempt++))
+    if [ $attempt -ge $max_attempts ]; then
+        echo "Timeout waiting for code ID to be available."
+        exit 1
+    fi
+done
 
 echo "Instantiating contract..."
-# Set the contract admin address if it is not already set
+# Set the contract admin address default to $DEPLOYER_ADDRESS if it is not passed in from the ENV file
 if [ -z "$CONTRACT_ADMIN_ADDRESS" ]; then
     CONTRACT_ADMIN_ADDRESS=$DEPLOYER_ADDRESS
     echo "Contract admin address: $CONTRACT_ADMIN_ADDRESS"
@@ -80,14 +95,28 @@ DEPLOY_TX_HASH=$(babylond tx wasm instantiate $CODE "$INSTANTIATE_MSG_JSON" \
     | jq -r '.txhash')
 echo "Deployed contract tx hash: $DEPLOY_TX_HASH"
 
-sleep 30
 # Query the contract address
 echo "Querying contract address..."
-CONTRACT_ADDR=$(babylond query tx $DEPLOY_TX_HASH \
-    --chain-id $BABYLON_CHAIN_ID \
-    --node $BABYLOND_NODE -o json \
-    | jq -r '.events[] | select(.type == "instantiate") | .attributes[] | select(.key == "_contract_address") | .value')
-echo "Contract address: $CONTRACT_ADDR"
+max_attempts=10
+attempt=0
+while true; do
+    CONTRACT_ADDR=$(babylond query tx $DEPLOY_TX_HASH \
+        --chain-id $BABYLON_CHAIN_ID \
+        --node $BABYLOND_NODE -o json \
+        | jq -r '.events[] | select(.type == "instantiate") | .attributes[] | select(.key == "_contract_address") | .value' 2>/dev/null)
+
+    if [[ -n "$CONTRACT_ADDR" ]]; then
+        echo "Contract address: $CONTRACT_ADDR"
+        break
+    fi
+
+    sleep 3
+    ((attempt++))
+    if [ $attempt -ge $max_attempts ]; then
+        echo "Timeout waiting for contract address to be available."
+        exit 1
+    fi
+done
 
 # Query the contract config
 echo "Querying contract config..."
@@ -100,6 +129,20 @@ QUERY_CONSUMER_ID=$(babylond query wasm contract-state smart $CONTRACT_ADDR \
 echo "Contract consumer ID: $QUERY_CONSUMER_ID"
 if [ "$QUERY_CONSUMER_ID" != "$CONSUMER_ID" ]; then
     echo "Error: Contract consumer ID mismatch"
+    exit 1
+fi
+
+# Query the contract enabled state
+echo "Querying contract enabled state..."
+QUERY_CONFIG='{"is_enabled":{}}'
+QUERY_IS_ENABLED=$(babylond query wasm contract-state smart $CONTRACT_ADDR \
+    "$QUERY_CONFIG" \
+    --chain-id $BABYLON_CHAIN_ID \
+    --node $BABYLOND_NODE -o json \
+    | jq -r '.data')
+echo "Contract is enabled: $QUERY_IS_ENABLED"
+if [ "$QUERY_IS_ENABLED" != "$IS_ENABLED" ]; then
+    echo "Error: Contract enabled state mismatch"
     exit 1
 fi
 echo
