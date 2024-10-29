@@ -6,14 +6,6 @@ services:
     env_file:
       - "${PWD}/.env.deploy-cw-contract"
 
-  babylond-import-keys:
-    container_name: babylond-import-keys
-    image: snapchain/babylond:latest
-    env_file:
-      - "${PWD}/.env.babylon-integration"
-    volumes:
-      - ${PWD}/.babylond:/root/.babylond
-
   btc-staker:
     container_name: btc-staker
     # https://github.com/babylonlabs-io/btc-staker/commit/484bcb8fd9b7b0b525234d704dd049b1ef18e29f
