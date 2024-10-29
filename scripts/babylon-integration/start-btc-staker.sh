@@ -34,8 +34,10 @@ if [ ! -d "$BTC_STAKER_DIR" ]; then
 
   # TODO: this assumes that we use test keyring backend. when we change it, we
   # should update this.
-  # Import the existing Babylon account
+  # Import the Babylon account
   BTC_STAKER_KEYRING_DIR=${HOME}/.babylond/$BTC_STAKER_KEY
+  # Set the btc-staker key mnemonic to $BABYLON_PREFUNDED_KEY_MNEMONIC if it is not passed in from the ENV file
+  BTC_STAKER_KEY_MNEMONIC=${BTC_STAKER_KEY_MNEMONIC:-$BABYLON_PREFUNDED_KEY_MNEMONIC}
   if ! babylond keys show $BTC_STAKER_KEY --keyring-dir $BTC_STAKER_KEYRING_DIR --keyring-backend test &> /dev/null; then
       echo "Creating keyring directory $BTC_STAKER_KEYRING_DIR"
       mkdir -p $BTC_STAKER_KEYRING_DIR
