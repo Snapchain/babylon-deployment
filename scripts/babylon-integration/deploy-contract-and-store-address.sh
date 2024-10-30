@@ -2,7 +2,6 @@
 set -euo pipefail
 
 CONTRACT_DIR=$(pwd)/.contract
-CONTRACT_ADDR_FILE=$(pwd)/.contract/contract-address.txt
 
 # Only run if the directory does not exist
 if [ ! -d "$CONTRACT_DIR" ]; then
