@@ -83,8 +83,7 @@ restart-consumer-eotsmanager:
 .PHONY: restart-consumer-eotsmanager
 
 deploy-cw-contract:
-	@docker compose -f docker/docker-compose-babylon-integration.yml up -d deploy-cw-contract
-	@docker logs -f deploy-cw-contract
+	@./scripts/babylon-integration/deploy-contract-and-store-address.sh
 .PHONY: deploy-cw-contract
 
 install-babylond-and-import-key:
