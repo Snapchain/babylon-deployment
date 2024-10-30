@@ -3,7 +3,7 @@ set -euo pipefail
 
 # For signet, load environment variables from .env file
 set -a
-source $(pwd)/.env
+source $(pwd)/.env.babylon-integration
 set +a
 
 if [ -z "$(echo ${STAKING_TIME})" ] || [ -z "$(echo ${STAKING_AMOUNT})" ]; then
