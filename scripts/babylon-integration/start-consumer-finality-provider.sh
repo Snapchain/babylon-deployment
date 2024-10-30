@@ -43,7 +43,11 @@ if [ ! -d "$CONSUMER_FINALITY_PROVIDER_DIR" ]; then
       echo "Generated consumer-finality-provider key $CONSUMER_FINALITY_PROVIDER_KEY"
   fi
   echo
-  CONSUMER_FP_ADDRESS=$(babylond keys show $CONSUMER_FINALITY_PROVIDER_KEY --keyring-backend test --keyring-dir $CONSUMER_FP_KEYRING_DIR --output json | jq -r '.address')
+  CONSUMER_FP_ADDRESS=$(babylond keys show $CONSUMER_FINALITY_PROVIDER_KEY \
+      --keyring-backend test \
+      --keyring-dir $CONSUMER_FP_KEYRING_DIR \
+      --output json \
+      | jq -r '.address')
 
   # Copy the finality provider key to the mounted .consumer-finality-provider directory
   cp -R $CONSUMER_FP_KEYRING_DIR/keyring-test $CONSUMER_FINALITY_PROVIDER_DIR/
