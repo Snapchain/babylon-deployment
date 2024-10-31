@@ -28,7 +28,7 @@ services:
   consumer-eotsmanager:
     container_name: consumer-eotsmanager
     # https://github.com/babylonlabs-io/finality-provider/commit/45a24e1f5c235a829eaeca3c3336053032ec0088
-    image: babylonlabs/finality-provider:45a24e1f5c235a829eaeca3c3336053032ec0088
+    image: parketh/finality-provider:debug-query-opcc-block
     command: eotsd start
     volumes:
       - ${PWD}/.consumer-eotsmanager:/home/finality-provider/.eotsd
@@ -41,7 +41,7 @@ services:
   consumer-finality-provider:
     container_name: consumer-finality-provider
     # https://github.com/babylonlabs-io/finality-provider/commit/7d341b5d02e3f0e2b27a9a5c5e563a73a6601d50
-    image: babylonlabs/finality-provider:7d341b5d02e3f0e2b27a9a5c5e563a73a6601d50
+    image: parketh/finality-provider:debug-query-opcc-block
     command: fpd start
     volumes:
       - ${PWD}/.consumer-finality-provider:/home/finality-provider/.fpd
