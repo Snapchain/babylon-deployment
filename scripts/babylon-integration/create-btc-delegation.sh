@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# For signet, load environment variables from .env file
+# For signet, load environment variables from .env.babylon-integration file
 set -a
 source $(pwd)/.env.babylon-integration
 set +a
