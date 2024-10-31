@@ -126,8 +126,8 @@ if wait_for_tx "$DEPLOY_TX_HASH" 10 3; then
     # Write the contract address to the file
     CONTRACT_DIR=/home/.contract
     mkdir -p $CONTRACT_DIR
-    echo "Writing contract address to $CONTRACT_DIR/$CONTRACT_ADDR_FILE"
-    echo $CONTRACT_ADDR > $CONTRACT_DIR/$CONTRACT_ADDR_FILE
+    echo "Writing contract address to $CONTRACT_DIR/contract-address.txt"
+    echo $CONTRACT_ADDR > $CONTRACT_DIR/contract-address.txt
 else
     echo "Failed to get contract address"
     exit 1
