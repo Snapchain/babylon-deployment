@@ -6,12 +6,6 @@ set -a
 source $(pwd)/.env.babylon-integration
 set +a
 
-# Check if the babylon prefunded key already exists
-if babylond keys show $BABYLON_PREFUNDED_KEY --keyring-backend test &> /dev/null; then
-    echo "Babylon prefunded key $BABYLON_PREFUNDED_KEY already exists"
-    exit 0
-fi
-
 # Install babylond
 BABYLOND_PATH=/usr/local/bin/babylond
 if [ ! -f "$BABYLOND_PATH" ]; then
@@ -59,9 +53,11 @@ echo "Babylon version: $(babylond version)"
 echo
 
 # Import the babylon prefunded key
-echo "Importing babylon prefunded key $BABYLON_PREFUNDED_KEY..."
-babylond keys add $BABYLON_PREFUNDED_KEY \
-    --keyring-backend test \
-    --recover <<< "$BABYLON_PREFUNDED_KEY_MNEMONIC"
-echo "Imported babylon prefunded key $BABYLON_PREFUNDED_KEY"
+if ! babylond keys show $BABYLON_PREFUNDED_KEY --keyring-backend test &> /dev/null; then
+    echo "Importing babylon prefunded key $BABYLON_PREFUNDED_KEY..."
+    babylond keys add $BABYLON_PREFUNDED_KEY \
+        --keyring-backend test \
+        --recover <<< "$BABYLON_PREFUNDED_KEY_MNEMONIC"
+    echo "Imported babylon prefunded key $BABYLON_PREFUNDED_KEY"
+fi
 echo
