@@ -30,7 +30,7 @@ if [ ! -d "$FINALITY_GADGET_DIR" ]; then
   echo "Successfully updated the conf file $FINALITY_GADGET_CONF"
   # the folders are owned by user snapchain. but per https://github.com/babylonlabs-io/finality-gadget/blob/37a8b1c9b2698c9967bbc060583668d6c7a1e6f9/Dockerfile#L38,
   # it needs to be writable by user 1138. so we need the permission.
-  sudo chmod -R 777 $FINALITY_GADGET_DIR
+  chmod -R 777 $FINALITY_GADGET_DIR
   echo "Successfully initialized $FINALITY_GADGET_DIR directory"
   echo
 fi
