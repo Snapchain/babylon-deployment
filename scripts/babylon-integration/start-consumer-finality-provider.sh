@@ -48,8 +48,9 @@ if [ ! -d "$CONSUMER_FINALITY_PROVIDER_DIR" ]; then
   cp -R $CONSUMER_FP_KEYRING_DIR/keyring-test $CONSUMER_FINALITY_PROVIDER_DIR/
   echo "Copied the generated key to the $CONSUMER_FINALITY_PROVIDER_DIR directory"
 
-  # TODO: 777 is not the best practice. we need to fix it
-  chmod -R 777 $CONSUMER_FINALITY_PROVIDER_DIR
+  # the folders are owned by user snapchain. but per https://github.com/babylonlabs-io/finality-provider/blob/c02f046587db569d550f63ed776ba05735728b01/Dockerfile#L40,
+  # it needs to be writable by user 1138. so we need the permission.
+  chmod -R 666 $CONSUMER_FINALITY_PROVIDER_DIR
   echo "Successfully initialized $CONSUMER_FINALITY_PROVIDER_DIR directory"
   echo
 fi

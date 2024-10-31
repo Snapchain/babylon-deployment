@@ -17,7 +17,9 @@ if [ ! -d "$CONSUMER_EOTS_MANAGER_DIR" ]; then
   echo "Copying $EXAMPLE_EOTS_MANAGER_CONF to $EOTS_MANAGER_CONF..."
   cp $EXAMPLE_EOTS_MANAGER_CONF $EOTS_MANAGER_CONF
 
-  chmod -R 777 $CONSUMER_EOTS_MANAGER_DIR
+  # the folders are owned by user snapchain. but per https://github.com/babylonlabs-io/finality-provider/blob/c02f046587db569d550f63ed776ba05735728b01/Dockerfile#L40,
+  # it needs to be writable by user 1138. so we need the permission.
+  chmod -R 666 $CONSUMER_EOTS_MANAGER_DIR
   echo "Successfully initialized $CONSUMER_EOTS_MANAGER_DIR directory"
   echo
 fi
