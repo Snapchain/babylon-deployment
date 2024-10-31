@@ -54,7 +54,7 @@ if [ ! -d "$BTC_STAKER_DIR" ]; then
   cp -R $BTC_STAKER_KEYRING_DIR/keyring-test $BTC_STAKER_DIR/
   echo "Copied the imported key to the $BTC_STAKER_DIR directory"
 
-  chmod -R 750 $BTC_STAKER_DIR
+  chmod -R 777 $BTC_STAKER_DIR
   echo "Successfully initialized $BTC_STAKER_DIR directory"
   echo
 fi

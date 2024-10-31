@@ -2,9 +2,11 @@ services:
   # This is a one-off container just for deploying cw contract
   deploy-cw-contract:
     container_name: deploy-cw-contract
-    image: snapchain/deploy-cw-contract:7c9aa71
+    image: snapchain/deploy-cw-contract:693cf5b
     env_file:
       - "${PWD}/.env.deploy-cw-contract"
+    volumes:
+      - ${PWD}/.contract:/home/.contract
     profiles:
       - cw-contract # isolates service so other containers can start without .env.deploy-cw-contract
 
