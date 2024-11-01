@@ -6,7 +6,7 @@ services:
     env_file:
       - "${PWD}/.env.babylon-integration"
     volumes:
-      - ${PWD}/.deploy:/home/.deploy
+      - ${PWD}/.deploy:/home/.babylond
     entrypoint:
       - /bin/bash
       - -c
