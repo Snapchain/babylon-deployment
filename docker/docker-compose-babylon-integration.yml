@@ -31,6 +31,8 @@ services:
     image: snapchain/babylon-deployment-utils:latest
     env_file:
       - "${PWD}/.env.babylon-integration"
+    volumes:
+      - ${PWD}/.deploy:/home/.babylond
     entrypoint:
       - /bin/bash
       - -c
