@@ -39,7 +39,7 @@ if [ ! -d "$BTC_STAKER_DIR" ]; then
 
   # the folders are owned by user snapchain. but per https://github.com/babylonlabs-io/btc-staker/blob/6eb0a65145a472f209726dfe0b8fc0cfd6ab3068/Dockerfile#L22,
   # it needs to be writable by user 1138. so we need the permission.
-  chmod -R 666 $BTC_STAKER_DIR
+  chmod -R 777 $BTC_STAKER_DIR
   echo "Successfully initialized $BTC_STAKER_DIR directory"
   echo
 fi
