@@ -9,7 +9,7 @@ set +a
 EXAMPLE_BTC_STAKER_CONF=$(pwd)/configs/babylon-integration/stakerd.conf
 BTC_STAKER_DIR=$(pwd)/.btc-staker
 BTC_STAKER_CONF=$(pwd)/.btc-staker/stakerd.conf
-BTC_STAKER_KEYRING_DIR=$(pwd)/.deploy/$BTC_STAKER_KEY
+PREFUNDED_KEYRING_DIR=$(pwd)/.deploy
 
 # Only run if the directory does not exist
 if [ ! -d "$BTC_STAKER_DIR" ]; then
@@ -26,15 +26,15 @@ if [ ! -d "$BTC_STAKER_DIR" ]; then
   sed -i.bak "s|\${BITCOIN_NETWORK}|$BITCOIN_NETWORK|g" $BTC_STAKER_CONF
   sed -i.bak "s|\${ZMQ_RAWBLOCK_URL}|$ZMQ_RAWBLOCK_URL|g" $BTC_STAKER_CONF
   sed -i.bak "s|\${ZMQ_RAWTR_URL}|$ZMQ_RAWTR_URL|g" $BTC_STAKER_CONF
-  sed -i.bak "s|\${BTC_STAKER_KEY}|$BTC_STAKER_KEY|g" $BTC_STAKER_CONF
+  sed -i.bak "s|\${BTC_STAKER_KEY}|$BABYLON_PREFUNDED_KEY|g" $BTC_STAKER_CONF
   sed -i.bak "s|\${BABYLON_CHAIN_ID}|$BABYLON_CHAIN_ID|g" $BTC_STAKER_CONF
   sed -i.bak "s|\${BABYLON_RPC_URL}|$BABYLON_RPC_URL|g" $BTC_STAKER_CONF
   sed -i.bak "s|\${BABYLON_GRPC_URL}|$BABYLON_GRPC_URL|g" $BTC_STAKER_CONF
   rm $BTC_STAKER_DIR/stakerd.conf.bak
   echo "Successfully updated the conf file $BTC_STAKER_CONF"
 
-  # Copy the btc-staker key to the mounted .btc-staker directory
-  cp -R $BTC_STAKER_KEYRING_DIR/keyring-test $BTC_STAKER_DIR/
+  # Copy the prefunded key to the mounted .btc-staker directory
+  cp -R $PREFUNDED_KEYRING_DIR/keyring-test $BTC_STAKER_DIR/
   echo "Copied the imported key to the $BTC_STAKER_DIR directory"
 
   # the folders are owned by user snapchain. but per https://github.com/babylonlabs-io/btc-staker/blob/6eb0a65145a472f209726dfe0b8fc0cfd6ab3068/Dockerfile#L22,

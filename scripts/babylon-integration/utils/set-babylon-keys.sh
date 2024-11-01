@@ -21,22 +21,6 @@ if ! babylond keys show $BABYLON_PREFUNDED_KEY --keyring-dir $KEYRING_DIR --keyr
 fi
 echo
 
-# Import the Babylon account for the btc-staker
-BTC_STAKER_KEYRING_DIR=$KEYRING_DIR/$BTC_STAKER_KEY
-# Set the btc-staker key mnemonic to $BABYLON_PREFUNDED_KEY_MNEMONIC if it is not passed in from the ENV file
-BTC_STAKER_KEY_MNEMONIC=${BTC_STAKER_KEY_MNEMONIC:-$BABYLON_PREFUNDED_KEY_MNEMONIC}
-if ! babylond keys show $BTC_STAKER_KEY --keyring-dir $BTC_STAKER_KEYRING_DIR --keyring-backend test &> /dev/null; then
-    echo "Creating keyring directory $BTC_STAKER_KEYRING_DIR"
-    mkdir -p $BTC_STAKER_KEYRING_DIR
-    echo "Importing key $BTC_STAKER_KEY..."
-    babylond keys add $BTC_STAKER_KEY \
-        --keyring-backend test \
-        --keyring-dir $BTC_STAKER_KEYRING_DIR \
-        --recover <<< "$BTC_STAKER_KEY_MNEMONIC"
-    echo "Imported btc-staker key $BTC_STAKER_KEY"
-fi
-echo
-
 # Create new Babylon account for the consumer-finality-provider
 CONSUMER_FP_KEYRING_DIR=$KEYRING_DIR/$CONSUMER_FINALITY_PROVIDER_KEY
 if ! babylond keys show $CONSUMER_FINALITY_PROVIDER_KEY --keyring-dir $CONSUMER_FP_KEYRING_DIR --keyring-backend test &> /dev/null; then
