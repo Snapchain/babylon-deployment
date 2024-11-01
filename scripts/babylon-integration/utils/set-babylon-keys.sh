@@ -21,22 +21,6 @@ if ! babylond keys show $BABYLON_PREFUNDED_KEY --keyring-dir $KEYRING_DIR --keyr
 fi
 echo
 
-# Import Babylon account for the contract deployer
-CONTRACT_DEPLOYER_KEYRING_DIR=$KEYRING_DIR/$CONTRACT_DEPLOYER_KEY
-# Set the contract deployer key mnemonic to $BABYLON_PREFUNDED_KEY_MNEMONIC if it is not passed in from the ENV file
-CONTRACT_DEPLOYER_KEY_MNEMONIC=${CONTRACT_DEPLOYER_KEY_MNEMONIC:-$BABYLON_PREFUNDED_KEY_MNEMONIC}
-if ! babylond keys show $CONTRACT_DEPLOYER_KEY --keyring-dir $CONTRACT_DEPLOYER_KEYRING_DIR --keyring-backend test &> /dev/null; then
-    echo "Creating keyring directory $CONTRACT_DEPLOYER_KEYRING_DIR"
-    mkdir -p $CONTRACT_DEPLOYER_KEYRING_DIR
-    echo "Importing key $CONTRACT_DEPLOYER_KEY..."
-    babylond keys add $CONTRACT_DEPLOYER_KEY \
-        --keyring-backend test \
-        --keyring-dir $CONTRACT_DEPLOYER_KEYRING_DIR \
-        --recover <<< "$CONTRACT_DEPLOYER_KEY_MNEMONIC"
-    echo "Imported contract deployer key $CONTRACT_DEPLOYER_KEY"
-fi
-echo
-
 # Import the Babylon account for the btc-staker
 BTC_STAKER_KEYRING_DIR=$KEYRING_DIR/$BTC_STAKER_KEY
 # Set the btc-staker key mnemonic to $BABYLON_PREFUNDED_KEY_MNEMONIC if it is not passed in from the ENV file

@@ -18,12 +18,10 @@ if echo "$CONSUMER_IDS" | grep -q "^${CONSUMER_ID}$"; then
 fi
 
 # register the consumer chain
-CONSUMER_CHAIN_DESCRIPTION=${CONSUMER_CHAIN_DESCRIPTION:-"An OP Stack devnet that integrates with Babylon finality gadget"}
 echo "Registering consumer chain $CONSUMER_ID..."
 CONSUMER_REGISTRATION_TX_HASH=$(babylond tx btcstkconsumer register-consumer \
     $CONSUMER_ID \
     $CONSUMER_CHAIN_NAME \
-    $CONSUMER_CHAIN_DESCRIPTION \
     --chain-id $BABYLON_CHAIN_ID \
     --node $BABYLON_RPC_URL \
     --from $BABYLON_PREFUNDED_KEY \

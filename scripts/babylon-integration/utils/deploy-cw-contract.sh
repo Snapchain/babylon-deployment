@@ -1,6 +1,8 @@
 #!/bin/bash
 set -uo pipefail
 
+# Set keyring directory
+KEYRING_DIR=/home/.babylond
 # Set contract address output directory
 CONTRACT_DIR=/home/.deploy
 if [ ! -d "$CONTRACT_DIR" ]; then
@@ -55,21 +57,14 @@ if [ ! -f "$CONTRACT_PATH" ]; then
 fi
 echo "Contract is ready at $CONTRACT_PATH"
 
-DEPLOYER_ADDRESS=$(babylond keys show -a $CONTRACT_DEPLOYER_KEY --keyring-backend test)
-echo "Deployer address: $DEPLOYER_ADDRESS"
-DEPLOYER_BALANCE=$(babylond query bank balances $DEPLOYER_ADDRESS \
-    --chain-id $BABYLON_CHAIN_ID \
-    --node $BABYLON_RPC_URL -o json \
-    | jq -r '.balances[0].amount')
-echo "Deployer balance: $DEPLOYER_BALANCE"
-
 # Store the contract
 echo "Storing contract..."
 STORE_TX_HASH=$(babylond tx wasm store $CONTRACT_PATH \
     --gas-prices 0.2ubbn \
     --gas auto \
     --gas-adjustment 1.3 \
-    --from $DEPLOYER_ADDRESS \
+    --from $BABYLON_PREFUNDED_KEY \
+    --keyring-dir $KEYRING_DIR \
     --chain-id $BABYLON_CHAIN_ID \
     --node $BABYLON_RPC_URL \
     --keyring-backend test -o json -y \
@@ -105,7 +100,8 @@ DEPLOY_TX_HASH=$(babylond tx wasm instantiate $CODE "$INSTANTIATE_MSG_JSON" \
     --gas-adjustment 1.3 \
     --label $CONTRACT_LABEL \
     --admin $CONTRACT_ADMIN_ADDRESS \
-    --from $DEPLOYER_ADDRESS \
+    --from $BABYLON_PREFUNDED_KEY \
+    --keyring-dir $KEYRING_DIR \
     --chain-id $BABYLON_CHAIN_ID \
     --node $BABYLON_RPC_URL \
     --keyring-backend test -o json -y \
