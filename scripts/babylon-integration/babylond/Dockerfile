@@ -22,7 +22,5 @@ RUN WASMVM_VERSION=$(grep github.com/CosmWasm/wasmvm /tmp/go.mod | cut -d' ' -f2
     sha256sum /lib/libwasmvm.$(uname -m).so | grep $(cat /tmp/checksums.txt | grep libwasmvm.$(uname -m) | cut -d ' ' -f 1)
 RUN rm -f /tmp/go.mod
 
-COPY entrypoint.sh /entrypoint.sh
+COPY set-babylon-keys.sh /set-babylon-keys.sh
 COPY deploy-cw-contract.sh /deploy-cw-contract.sh
-
-ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]

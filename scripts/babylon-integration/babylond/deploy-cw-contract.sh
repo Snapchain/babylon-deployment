@@ -1,6 +1,13 @@
 #!/bin/bash
 set -uo pipefail
 
+# Set contract address output directory
+CONTRACT_DIR=/home/.babylond
+if [ ! -d "$CONTRACT_DIR" ]; then
+    echo "Creating directory $CONTRACT_DIR"
+    mkdir -p $CONTRACT_DIR
+fi
+
 # Function to handle pending transactions
 wait_for_tx() {
     local tx_hash=$1
@@ -12,7 +19,7 @@ wait_for_tx() {
         # Query with explicit error handling
         if output=$(babylond query tx "$tx_hash" \
             --chain-id "$BABYLON_CHAIN_ID" \
-            --node "$BABYLOND_NODE" -o json 2>&1); then
+            --node "$BABYLON_RPC_URL" -o json 2>&1); then
             echo "Transaction found"
             return 0
         else
@@ -33,16 +40,6 @@ wait_for_tx() {
     return 1
 }
 
-# TODO: don't use test keyring backend in production
-# Import the key
-if ! babylond keys show $CONTRACT_DEPLOYER_KEY --keyring-backend test &> /dev/null; then
-    echo "Importing key $CONTRACT_DEPLOYER_KEY..."
-    babylond keys add $CONTRACT_DEPLOYER_KEY \
-        --recover --keyring-backend test <<< "$CONTRACT_DEPLOYER_KEY_MNEMONIC"
-    echo "Key $CONTRACT_DEPLOYER_KEY imported"
-fi
-echo
-
 # Download the contract
 echo "Downloading contract version $CONTRACT_VERSION..."
 curl -SL "https://github.com/babylonlabs-io/babylon-contract/releases/download/$CONTRACT_VERSION/${CONTRACT_FILE}.zip" -o "${CONTRACT_FILE}.zip"
@@ -62,7 +59,7 @@ DEPLOYER_ADDRESS=$(babylond keys show -a $CONTRACT_DEPLOYER_KEY --keyring-backen
 echo "Deployer address: $DEPLOYER_ADDRESS"
 DEPLOYER_BALANCE=$(babylond query bank balances $DEPLOYER_ADDRESS \
     --chain-id $BABYLON_CHAIN_ID \
-    --node $BABYLOND_NODE -o json \
+    --node $BABYLON_RPC_URL -o json \
     | jq -r '.balances[0].amount')
 echo "Deployer balance: $DEPLOYER_BALANCE"
 
@@ -74,7 +71,7 @@ STORE_TX_HASH=$(babylond tx wasm store $CONTRACT_PATH \
     --gas-adjustment 1.3 \
     --from $DEPLOYER_ADDRESS \
     --chain-id $BABYLON_CHAIN_ID \
-    --node $BABYLOND_NODE \
+    --node $BABYLON_RPC_URL \
     --keyring-backend test -o json -y \
     | jq -r '.txhash')
 echo "Stored contract tx hash: $STORE_TX_HASH"
@@ -84,7 +81,7 @@ echo "Querying code ID..."
 if wait_for_tx "$STORE_TX_HASH" 10 3; then
     CODE=$(babylond query tx "$STORE_TX_HASH" \
         --chain-id "$BABYLON_CHAIN_ID" \
-        --node "$BABYLOND_NODE" -o json \
+        --node "$BABYLON_RPC_URL" -o json \
         | jq -r '.events[] | select(.type == "store_code") | .attributes[] | select(.key == "code_id") | .value')
     echo "Code ID: $CODE"
 else
@@ -110,7 +107,7 @@ DEPLOY_TX_HASH=$(babylond tx wasm instantiate $CODE "$INSTANTIATE_MSG_JSON" \
     --admin $CONTRACT_ADMIN_ADDRESS \
     --from $DEPLOYER_ADDRESS \
     --chain-id $BABYLON_CHAIN_ID \
-    --node $BABYLOND_NODE \
+    --node $BABYLON_RPC_URL \
     --keyring-backend test -o json -y \
     | jq -r '.txhash')
 echo "Deployed contract tx hash: $DEPLOY_TX_HASH"
@@ -120,12 +117,9 @@ echo "Querying contract address..."
 if wait_for_tx "$DEPLOY_TX_HASH" 10 3; then
     CONTRACT_ADDR=$(babylond query tx "$DEPLOY_TX_HASH" \
         --chain-id "$BABYLON_CHAIN_ID" \
-        --node "$BABYLOND_NODE" -o json \
+        --node "$BABYLON_RPC_URL" -o json \
         | jq -r '.events[] | select(.type == "instantiate") | .attributes[] | select(.key == "_contract_address") | .value')
     echo "Contract address: $CONTRACT_ADDR"
-    # Write the contract address to the file
-    CONTRACT_DIR=/home/.contract
-    mkdir -p $CONTRACT_DIR
     echo "Writing contract address to $CONTRACT_DIR/contract-address.txt"
     echo $CONTRACT_ADDR > $CONTRACT_DIR/contract-address.txt
 else
@@ -139,7 +133,7 @@ QUERY_CONFIG='{"config":{}}'
 QUERY_CONSUMER_ID=$(babylond query wasm contract-state smart $CONTRACT_ADDR \
     "$QUERY_CONFIG" \
     --chain-id $BABYLON_CHAIN_ID \
-    --node $BABYLOND_NODE -o json \
+    --node $BABYLON_RPC_URL -o json \
     | jq -r '.data.consumer_id')
 echo "Contract consumer ID: $QUERY_CONSUMER_ID"
 if [ "$QUERY_CONSUMER_ID" != "$CONSUMER_ID" ]; then
@@ -153,7 +147,7 @@ QUERY_CONFIG='{"is_enabled":{}}'
 QUERY_IS_ENABLED=$(babylond query wasm contract-state smart $CONTRACT_ADDR \
     "$QUERY_CONFIG" \
     --chain-id $BABYLON_CHAIN_ID \
-    --node $BABYLOND_NODE -o json \
+    --node $BABYLON_RPC_URL -o json \
     | jq -r '.data')
 echo "Contract is enabled: $QUERY_IS_ENABLED"
 if [ "$QUERY_IS_ENABLED" != "$IS_ENABLED" ]; then

@@ -1,23 +1,39 @@
 #!/bin/bash
 set -euo pipefail
 
-echo "Printing babylond version..."
-babylond version
-echo
-
+# TODO: don't use test keyring backend in production
 echo "Setting Babylon keys..."
 # Set keyring directory
 KEYRING_DIR=/home/.babylond
+if [ ! -d "$KEYRING_DIR" ]; then
+    echo "Creating directory $KEYRING_DIR"
+    mkdir -p $KEYRING_DIR
+fi
+
 # Import the Babylon prefunded key
 if ! babylond keys show $BABYLON_PREFUNDED_KEY --keyring-dir $KEYRING_DIR --keyring-backend test &> /dev/null; then
-    echo "Creating keyring directory $KEYRING_DIR"
-    mkdir -p $KEYRING_DIR
     echo "Importing Babylon prefunded key $BABYLON_PREFUNDED_KEY..."
     babylond keys add $BABYLON_PREFUNDED_KEY \
         --keyring-dir $KEYRING_DIR \
         --keyring-backend test \
         --recover <<< "$BABYLON_PREFUNDED_KEY_MNEMONIC"
     echo "Imported Babylon prefunded key $BABYLON_PREFUNDED_KEY"
+fi
+echo
+
+# Import Babylon account for the contract deployer
+CONTRACT_DEPLOYER_KEYRING_DIR=$KEYRING_DIR/$CONTRACT_DEPLOYER_KEY
+# Set the contract deployer key mnemonic to $BABYLON_PREFUNDED_KEY_MNEMONIC if it is not passed in from the ENV file
+CONTRACT_DEPLOYER_KEY_MNEMONIC=${CONTRACT_DEPLOYER_KEY_MNEMONIC:-$BABYLON_PREFUNDED_KEY_MNEMONIC}
+if ! babylond keys show $CONTRACT_DEPLOYER_KEY --keyring-dir $CONTRACT_DEPLOYER_KEYRING_DIR --keyring-backend test &> /dev/null; then
+    echo "Creating keyring directory $CONTRACT_DEPLOYER_KEYRING_DIR"
+    mkdir -p $CONTRACT_DEPLOYER_KEYRING_DIR
+    echo "Importing key $CONTRACT_DEPLOYER_KEY..."
+    babylond keys add $CONTRACT_DEPLOYER_KEY \
+        --keyring-backend test \
+        --keyring-dir $CONTRACT_DEPLOYER_KEYRING_DIR \
+        --recover <<< "$CONTRACT_DEPLOYER_KEY_MNEMONIC"
+    echo "Imported contract deployer key $CONTRACT_DEPLOYER_KEY"
 fi
 echo
 

@@ -2,22 +2,28 @@ services:
   # This is a one-off container just for deploying cw contract
   deploy-cw-contract:
     container_name: deploy-cw-contract
-    image: snapchain/deploy-cw-contract:693cf5b
-    env_file:
-      - "${PWD}/.env.deploy-cw-contract"
-    volumes:
-      - ${PWD}/.deploy:/home/.contract
-    profiles:
-      - cw-contract # isolates service so other containers can start without .env.deploy-cw-contract
-
-  # This is a one-off container just for setting the Babylon keys
-  set-babylon-keys:
-    container_name: set-babylon-keys
-    image: snapchain/set-babylon-keys:latest
+    image: snapchain/babylond:latest
     env_file:
       - "${PWD}/.env.babylon-integration"
     volumes:
       - ${PWD}/.deploy:/home/.babylond
+    entrypoint:
+      - /bin/bash
+      - -c
+      - /deploy-cw-contract.sh
+
+  # This is a one-off container just for setting the Babylon keys
+  set-babylon-keys:
+    container_name: set-babylon-keys
+    image: snapchain/babylond:latest
+    env_file:
+      - "${PWD}/.env.babylon-integration"
+    volumes:
+      - ${PWD}/.deploy:/home/.babylond
+    entrypoint:
+      - /bin/bash
+      - -c
+      - /set-babylon-keys.sh
 
   btc-staker:
     container_name: btc-staker
