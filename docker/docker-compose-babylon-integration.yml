@@ -25,6 +25,7 @@ services:
       - -c
       - /set-babylon-keys.sh
 
+  # This is a one-off container just for registering the consumer chain
   register-consumer-chain:
     container_name: register-consumer-chain
     image: snapchain/babylon-deployment-utils:latest
