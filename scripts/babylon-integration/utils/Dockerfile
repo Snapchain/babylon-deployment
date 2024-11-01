@@ -23,5 +23,4 @@ RUN WASMVM_VERSION=$(grep github.com/CosmWasm/wasmvm /tmp/go.mod | cut -d' ' -f2
 RUN rm -f /tmp/go.mod
 
 COPY set-babylon-keys.sh /set-babylon-keys.sh
-COPY register-consumer-chain.sh /register-consumer-chain.sh
 COPY deploy-cw-contract.sh /deploy-cw-contract.sh
