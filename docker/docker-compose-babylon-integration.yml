@@ -2,7 +2,7 @@ services:
   # This is a one-off container just for setting the Babylon keys
   set-babylon-keys:
     container_name: set-babylon-keys
-    image: snapchain/babylon-deployment-utils:latest
+    image: snapchain/babylon-deployment-utils:5881538
     env_file:
       - "${PWD}/.env.babylon-integration"
     volumes:
@@ -15,7 +15,7 @@ services:
   # This is a one-off container just for registering the consumer chain
   register-consumer-chain:
     container_name: register-consumer-chain
-    image: snapchain/babylon-deployment-utils:latest
+    image: snapchain/babylon-deployment-utils:5881538
     env_file:
       - "${PWD}/.env.babylon-integration"
     volumes:
