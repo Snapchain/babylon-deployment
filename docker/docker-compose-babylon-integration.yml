@@ -6,7 +6,7 @@ services:
     env_file:
       - "${PWD}/.env.deploy-cw-contract"
     volumes:
-      - ${PWD}/.contract:/home/.contract
+      - ${PWD}/.deploy:/home/.contract
     profiles:
       - cw-contract # isolates service so other containers can start without .env.deploy-cw-contract
 

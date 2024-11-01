@@ -1,16 +1,11 @@
 name: publish-deploy-contract
 
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
-
 on:
   push:
     branches:
       - main
     paths:
-      - 'scripts/deploy-cw-contract/**'
+      - 'scripts/babylon-integration/deploy-cw-contract/**'
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -64,7 +59,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          context: scripts/deploy-cw-contract
+          context: scripts/babylon-integration/deploy-cw-contract
           platforms: linux/amd64,linux/arm64
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.set-tag.outputs.TAG }}
           cache-from: type=gha

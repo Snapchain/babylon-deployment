@@ -1,12 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
-CONTRACT_DIR=$(pwd)/.contract
+DEPLOY_OUTPUT_DIR=$(pwd)/.deploy
 
 # Only run if the directory does not exist
-if [ ! -d "$CONTRACT_DIR" ]; then
-  echo "Creating $CONTRACT_DIR directory..."
-  mkdir -p $CONTRACT_DIR
+if [ ! -d "$DEPLOY_OUTPUT_DIR" ]; then
+  echo "Creating $DEPLOY_OUTPUT_DIR directory..."
+  mkdir -p $DEPLOY_OUTPUT_DIR
 fi
 
 # deploy the contract

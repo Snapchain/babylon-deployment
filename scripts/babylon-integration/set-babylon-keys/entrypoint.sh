@@ -51,25 +51,12 @@ if ! babylond keys show $CONSUMER_FINALITY_PROVIDER_KEY --keyring-dir $CONSUMER_
 fi
 echo
 
-# Check the balance of the Babylon prefunded key
-echo "Checking the balance of the Babylon prefunded key $BABYLON_PREFUNDED_KEY..."
+# Fund the consumer-finality-provider account
 PREFUNDED_ADDRESS=$(babylond keys show $BABYLON_PREFUNDED_KEY \
     --keyring-dir $KEYRING_DIR \
     --keyring-backend test \
     --output json \
     | jq -r '.address')
-BABYLON_PREFUNDED_KEY_BALANCE=$(babylond query bank balances ${PREFUNDED_ADDRESS} \
-    --chain-id $BABYLON_CHAIN_ID \
-    --node $BABYLON_RPC_URL \
-    --output json \
-    | jq '.balances[0].amount | tonumber')
-if [ $BABYLON_PREFUNDED_KEY_BALANCE -lt $CONSUMER_FP_FUND_AMOUNT_UBBN ]; then
-    echo "Babylon prefunded key balance is less than the funding amount"
-    exit 1
-fi
-echo "Babylon prefunded key balance: $BABYLON_PREFUNDED_KEY_BALANCE"
-echo
-# Fund the consumer-finality-provider account
 CONSUMER_FP_ADDRESS=$(babylond keys show $CONSUMER_FINALITY_PROVIDER_KEY \
     --keyring-dir $CONSUMER_FP_KEYRING_DIR \
     --keyring-backend test \
@@ -82,6 +69,7 @@ FUND_TX_HASH=$(babylond tx bank send \
     "${CONSUMER_FP_FUND_AMOUNT_UBBN}ubbn" \
     --chain-id $BABYLON_CHAIN_ID \
     --node $BABYLON_RPC_URL \
+    --keyring-dir $KEYRING_DIR \
     --keyring-backend test \
     --gas auto \
     --gas-adjustment 1.5 \
