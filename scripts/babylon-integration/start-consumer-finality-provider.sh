@@ -9,6 +9,7 @@ set +a
 EXAMPLE_FINALITY_PROVIDER_CONF=$(pwd)/configs/babylon-integration/consumer-fpd.conf
 CONSUMER_FINALITY_PROVIDER_DIR=$(pwd)/.consumer-finality-provider
 FINALITY_PROVIDER_CONF=$(pwd)/.consumer-finality-provider/fpd.conf
+CONSUMER_FP_KEYRING_DIR=$(pwd)/.deploy/$CONSUMER_FINALITY_PROVIDER_KEY
 
 if [ ! -d "$CONSUMER_FINALITY_PROVIDER_DIR" ]; then
   echo "Creating $CONSUMER_FINALITY_PROVIDER_DIR directory..."
@@ -30,20 +31,6 @@ if [ ! -d "$CONSUMER_FINALITY_PROVIDER_DIR" ]; then
   rm $CONSUMER_FINALITY_PROVIDER_DIR/fpd.conf.bak
   echo "Successfully updated the conf file $FINALITY_PROVIDER_CONF"
 
-  # Create new Babylon account for the finality provider
-  CONSUMER_FP_KEYRING_DIR=${HOME}/.babylond/${CONSUMER_FINALITY_PROVIDER_KEY}
-  if ! babylond keys show $CONSUMER_FINALITY_PROVIDER_KEY --keyring-dir $CONSUMER_FP_KEYRING_DIR --keyring-backend test &> /dev/null; then
-      echo "Creating keyring directory $CONSUMER_FP_KEYRING_DIR"
-      mkdir -p $CONSUMER_FP_KEYRING_DIR
-      echo "Creating key $CONSUMER_FINALITY_PROVIDER_KEY..."
-      babylond keys add $CONSUMER_FINALITY_PROVIDER_KEY \
-          --keyring-backend test \
-          --keyring-dir $CONSUMER_FP_KEYRING_DIR \
-          --output json > $CONSUMER_FINALITY_PROVIDER_DIR/${CONSUMER_FINALITY_PROVIDER_KEY}.json
-      echo "Generated consumer-finality-provider key $CONSUMER_FINALITY_PROVIDER_KEY"
-  fi
-  echo
-
   # Copy the finality provider key to the mounted .consumer-finality-provider directory
   cp -R $CONSUMER_FP_KEYRING_DIR/keyring-test $CONSUMER_FINALITY_PROVIDER_DIR/
   echo "Copied the generated key to the $CONSUMER_FINALITY_PROVIDER_DIR directory"
@@ -54,40 +41,6 @@ if [ ! -d "$CONSUMER_FINALITY_PROVIDER_DIR" ]; then
   echo "Successfully initialized $CONSUMER_FINALITY_PROVIDER_DIR directory"
   echo
 fi
-
-# check the balance of the babylon prefunded key
-echo "Checking the balance of the babylon prefunded key $BABYLON_PREFUNDED_KEY..."
-PREFUNDED_ADDRESS=$(babylond keys show $BABYLON_PREFUNDED_KEY --keyring-backend test --output json | jq -r '.address')
-BABYLON_PREFUNDED_KEY_BALANCE=$(babylond query bank balances ${PREFUNDED_ADDRESS} \
-    --chain-id $BABYLON_CHAIN_ID \
-    --node $BABYLON_RPC_URL \
-    --output json | jq '.balances[0].amount | tonumber')
-if [ $BABYLON_PREFUNDED_KEY_BALANCE -lt $CONSUMER_FP_FUND_AMOUNT_UBBN ]; then
-    echo "Babylon prefunded key balance is less than the funding amount"
-    exit 1
-fi
-echo "Babylon prefunded key balance: $BABYLON_PREFUNDED_KEY_BALANCE"
-
-# fund the consumer-finality-provider account
-CONSUMER_FP_ADDRESS=$(babylond keys show $CONSUMER_FINALITY_PROVIDER_KEY \
-    --keyring-backend test \
-    --keyring-dir $CONSUMER_FP_KEYRING_DIR \
-    --output json \
-    | jq -r '.address')
-echo "Funding account $CONSUMER_FINALITY_PROVIDER_KEY..."
-FUND_TX_HASH=$(babylond tx bank send \
-    ${PREFUNDED_ADDRESS} \
-    ${CONSUMER_FP_ADDRESS} \
-    "${CONSUMER_FP_FUND_AMOUNT_UBBN}ubbn" \
-    --chain-id $BABYLON_CHAIN_ID \
-    --node $BABYLON_RPC_URL \
-    --keyring-backend test \
-    --gas auto \
-    --gas-adjustment 1.5 \
-    --gas-prices 0.2ubbn \
-    --output json -y \
-    | jq -r '.txhash')
-echo "Funding transaction hash: $FUND_TX_HASH"
 
 echo "Starting consumer-finality-provider..."
 docker compose -f docker/docker-compose-babylon-integration.yml up -d consumer-finality-provider

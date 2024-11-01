@@ -9,6 +9,7 @@ set +a
 EXAMPLE_BTC_STAKER_CONF=$(pwd)/configs/babylon-integration/stakerd.conf
 BTC_STAKER_DIR=$(pwd)/.btc-staker
 BTC_STAKER_CONF=$(pwd)/.btc-staker/stakerd.conf
+BTC_STAKER_KEYRING_DIR=$(pwd)/.deploy/$BTC_STAKER_KEY
 
 # Only run if the directory does not exist
 if [ ! -d "$BTC_STAKER_DIR" ]; then
@@ -31,24 +32,6 @@ if [ ! -d "$BTC_STAKER_DIR" ]; then
   sed -i.bak "s|\${BABYLON_GRPC_URL}|$BABYLON_GRPC_URL|g" $BTC_STAKER_CONF
   rm $BTC_STAKER_DIR/stakerd.conf.bak
   echo "Successfully updated the conf file $BTC_STAKER_CONF"
-
-  # TODO: this assumes that we use test keyring backend. when we change it, we
-  # should update this.
-  # Import the Babylon account
-  BTC_STAKER_KEYRING_DIR=${HOME}/.babylond/$BTC_STAKER_KEY
-  # Set the btc-staker key mnemonic to $BABYLON_PREFUNDED_KEY_MNEMONIC if it is not passed in from the ENV file
-  BTC_STAKER_KEY_MNEMONIC=${BTC_STAKER_KEY_MNEMONIC:-$BABYLON_PREFUNDED_KEY_MNEMONIC}
-  if ! babylond keys show $BTC_STAKER_KEY --keyring-dir $BTC_STAKER_KEYRING_DIR --keyring-backend test &> /dev/null; then
-      echo "Creating keyring directory $BTC_STAKER_KEYRING_DIR"
-      mkdir -p $BTC_STAKER_KEYRING_DIR
-      echo "Importing key $BTC_STAKER_KEY..."
-      babylond keys add $BTC_STAKER_KEY \
-          --keyring-backend test \
-          --keyring-dir $BTC_STAKER_KEYRING_DIR \
-          --recover <<< "$BTC_STAKER_KEY_MNEMONIC"
-      echo "Imported btc-staker key $BTC_STAKER_KEY"
-  fi
-  echo
 
   # Copy the btc-staker key to the mounted .btc-staker directory
   cp -R $BTC_STAKER_KEYRING_DIR/keyring-test $BTC_STAKER_DIR/

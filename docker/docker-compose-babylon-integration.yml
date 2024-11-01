@@ -10,6 +10,15 @@ services:
     profiles:
       - cw-contract # isolates service so other containers can start without .env.deploy-cw-contract
 
+  # This is a one-off container just for setting the Babylon keys
+  set-babylon-keys:
+    container_name: set-babylon-keys
+    image: snapchain/set-babylon-keys:latest
+    env_file:
+      - "${PWD}/.env.babylon-integration"
+    volumes:
+      - ${PWD}/.deploy:/home/.babylond
+
   btc-staker:
     container_name: btc-staker
     # https://github.com/babylonlabs-io/btc-staker/commit/484bcb8fd9b7b0b525234d704dd049b1ef18e29f
