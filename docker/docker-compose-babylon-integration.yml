@@ -25,6 +25,16 @@ services:
       - -c
       - /set-babylon-keys.sh
 
+  register-consumer-chain:
+    container_name: register-consumer-chain
+    image: snapchain/babylond:latest
+    env_file:
+      - "${PWD}/.env.babylon-integration"
+    entrypoint:
+      - /bin/bash
+      - -c
+      - /register-consumer-chain.sh
+
   btc-staker:
     container_name: btc-staker
     # https://github.com/babylonlabs-io/btc-staker/commit/484bcb8fd9b7b0b525234d704dd049b1ef18e29f

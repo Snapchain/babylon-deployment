@@ -89,3 +89,7 @@ deploy-cw-contract:
 set-babylon-keys:
 	@./scripts/babylon-integration/set-babylon-keys.sh
 .PHONY: set-babylon-keys
+
+register-consumer-chain:
+	@./scripts/babylon-integration/register-consumer-chain.sh
+.PHONY: register-consumer-chain
