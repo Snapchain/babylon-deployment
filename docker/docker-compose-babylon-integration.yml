@@ -28,7 +28,7 @@ services:
   # This is a one-off container just for deploying cw contract
   deploy-cw-contract:
     container_name: deploy-cw-contract
-    image: snapchain/babylon-deployment-utils:latest
+    image: snapchain/babylon-deployment-utils:5881538
     env_file:
       - "${PWD}/.env.babylon-integration"
     volumes:
