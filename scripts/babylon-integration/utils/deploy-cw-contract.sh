@@ -4,7 +4,7 @@ set -uo pipefail
 # Set keyring directory
 KEYRING_DIR=/home/.babylond
 # Set contract address output directory
-CONTRACT_DIR=/home/.babylond
+CONTRACT_DIR=/home/.deploy
 if [ ! -d "$CONTRACT_DIR" ]; then
     echo "Creating directory $CONTRACT_DIR"
     mkdir -p $CONTRACT_DIR

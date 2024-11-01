@@ -1,17 +1,4 @@
 services:
-  # This is a one-off container just for deploying cw contract
-  deploy-cw-contract:
-    container_name: deploy-cw-contract
-    image: snapchain/babylon-deployment-utils:latest
-    env_file:
-      - "${PWD}/.env.babylon-integration"
-    volumes:
-      - ${PWD}/.deploy:/home/.babylond
-    entrypoint:
-      - /bin/bash
-      - -c
-      - /deploy-cw-contract.sh
-
   # This is a one-off container just for setting the Babylon keys
   set-babylon-keys:
     container_name: set-babylon-keys
@@ -19,7 +6,7 @@ services:
     env_file:
       - "${PWD}/.env.babylon-integration"
     volumes:
-      - ${PWD}/.deploy:/home/.babylond
+      - ${PWD}/.deploy/babylond:/home/.babylond
     entrypoint:
       - /bin/bash
       - -c
@@ -32,11 +19,25 @@ services:
     env_file:
       - "${PWD}/.env.babylon-integration"
     volumes:
-      - ${PWD}/.deploy:/home/.babylond
+      - ${PWD}/.deploy/babylond:/home/.babylond
     entrypoint:
       - /bin/bash
       - -c
       - /register-consumer-chain.sh
+
+  # This is a one-off container just for deploying cw contract
+  deploy-cw-contract:
+    container_name: deploy-cw-contract
+    image: snapchain/babylon-deployment-utils:latest
+    env_file:
+      - "${PWD}/.env.babylon-integration"
+    volumes:
+      - ${PWD}/.deploy/babylond:/home/.babylond
+      - ${PWD}/.deploy/contract:/home/.deploy
+    entrypoint:
+      - /bin/bash
+      - -c
+      - /deploy-cw-contract.sh
 
   btc-staker:
     container_name: btc-staker
