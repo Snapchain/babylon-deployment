@@ -86,6 +86,6 @@ deploy-cw-contract:
 	@./scripts/babylon-integration/deploy-contract-and-store-address.sh
 .PHONY: deploy-cw-contract
 
-install-babylond-and-import-key:
-	@./scripts/babylon-integration/install-babylond-and-import-key.sh
-.PHONY: install-babylond-and-import-key
+set-babylon-keys:
+	@./scripts/babylon-integration/set-babylon-keys.sh
+.PHONY: set-babylon-keys
