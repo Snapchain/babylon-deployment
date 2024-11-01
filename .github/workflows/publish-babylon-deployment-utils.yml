@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'scripts/babylon-integration/babylond/**'
+      - 'scripts/babylon-integration/utils/**'
 
 env:
   # Use docker.io for Docker Hub if empty
