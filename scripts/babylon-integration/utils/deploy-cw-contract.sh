@@ -85,8 +85,13 @@ else
 fi
 
 echo "Instantiating contract..."
-# Set the contract admin address default to $DEPLOYER_ADDRESS if it is not passed in from the ENV file
-CONTRACT_ADMIN_ADDRESS=${CONTRACT_ADMIN_ADDRESS:-$DEPLOYER_ADDRESS}
+PREFUNDED_ADDRESS=$(babylond keys show $BABYLON_PREFUNDED_KEY \
+    --keyring-dir $KEYRING_DIR \
+    --keyring-backend test \
+    --output json \
+    | jq -r '.address')
+# Set the contract admin address default to $PREFUNDED_ADDRESS if it is not passed in from the ENV file
+CONTRACT_ADMIN_ADDRESS=${CONTRACT_ADMIN_ADDRESS:-$PREFUNDED_ADDRESS}
 echo "Contract admin address: $CONTRACT_ADMIN_ADDRESS"
 
 INSTANTIATE_MSG_JSON=$(printf '{"admin":"%s","consumer_id":"%s","is_enabled":%s}' \

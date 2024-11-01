@@ -9,7 +9,7 @@ set +a
 EXAMPLE_FINALITY_PROVIDER_CONF=$(pwd)/configs/babylon-integration/consumer-fpd.conf
 CONSUMER_FINALITY_PROVIDER_DIR=$(pwd)/.consumer-finality-provider
 FINALITY_PROVIDER_CONF=$(pwd)/.consumer-finality-provider/fpd.conf
-CONSUMER_FP_KEYRING_DIR=$(pwd)/.deploy/$CONSUMER_FINALITY_PROVIDER_KEY
+CONSUMER_FP_KEYRING_DIR=$(pwd)/.deploy/babylond/$CONSUMER_FINALITY_PROVIDER_KEY
 
 if [ ! -d "$CONSUMER_FINALITY_PROVIDER_DIR" ]; then
   echo "Creating $CONSUMER_FINALITY_PROVIDER_DIR directory..."
