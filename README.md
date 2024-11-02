@@ -1,5 +1,19 @@
 # babylon-deployment
 
+## Dependencies
+
+| Dependency      | Version | Version Check Command |
+| ----------- | ----------- | ----------- |
+| [git](https://git-scm.com/)      | ^2       | `git --version`       |
+| [docker](https://www.docker.com/)      | ^20       | `docker --version`       |
+| [docker compose](https://docs.docker.com/compose/)      | ^2.20       | `docker compose version`       |
+| [go](https://go.dev/)      | ^1.21       | `go version`       |
+| [foundry](https://getfoundry.sh/)      | ^0.2.0       | `forge --version`       |
+| [make](https://linux.die.net/man/1/make)      | ^3       | `make --version`       |
+| [curl](https://curl.se/)      | ^8       | `curl --version`       |
+| [jq](https://github.com/jqlang/jq)      | ^1.6       | `jq --version`       |
+
+
 ## Setup Bitcoin node
 
 1. Copy the `.env.bitcoin.example` file to `.env.bitcoin` and set the variables
@@ -34,62 +48,171 @@
     ```bash
     docker compose -f docker/docker-compose-bitcoin.yml logs -f bitcoind
     ```
-## Consumer Chain Integration to Babylon
 
-**Prerequisite**:
-1. install `babylond`
+## Integrate Babylon finality system with OP Stack chain
 
-2. import existing or create new Babylon key
+This section describes how to integrate Babylon finality system to Babylon Euphrates 0.5.0 devnet with OP Stack chain.
 
-3. Check if the key is there
+Before starting the following steps, please make sure:
 
-    ```bash
-    babylond keys list --keyring-backend test
-    ```
+* your Bitcoin node is synced and has a balance.
+* your OP Stack chain is running and have at least one finalized block. For more details about how to setup OP Stack chain, please refer to the [OP chain deployment](https://github.com/Snapchain/op-chain-deployment/blob/main/README.md).
 
-4. fund the Babylon key from the faucet
 
-### Deployment
+Firstly, please claim the test tokens from the Euphrates faucet
 
-1. Copy the `.env.babylon-integration.example` file to `.env.babylon-integration` and set the variables
+```bash
+curl https://faucet-euphrates.devnet.babylonlabs.io/claim \
+-H "Content-Type: multipart/form-data" \
+-d '{ "address": "<YOUR_BABYLON_ADDRESS>"}'
+```
 
-    ```bash
-    cp .env.babylon-integration.example .env.babylon-integration
-    ```
+### 1. Setup environment variables
 
-    - `BITCOIN_NETWORK` can be either `regtest` or `signet`
-    - ... (TODO: add more details here)
+Copy the `.env.babylon-integration.example` file to `.env.babylon-integration`
 
-2. Start the Babylon BTC Staker
+```bash
+cp .env.babylon-integration.example .env.babylon-integration
+```
 
-    ```bash
-    make start-babylon-btc-staker
-    ```
+**Configure for Bitcoin**
+
+Based on the previous step `Setup Bitcoin node`, set the following variables with the values:
+- `BITCOIN_RPC_PASS`
+- `BTC_WALLET_PASS`
+    
+and replace the IP with your Bitcoin node IP:
+- `BITCOIN_RPC_HOST`
+- `ZMQ_RAWBLOCK_URL`
+- `ZMQ_RAWTX_URL`
+
+**Configure for Babylon**
+
+set your Babylon key's mnemonic
+
+- `BABYLON_PREFUNDED_KEY_MNEMONIC`
+
+set the following variables to register your OP Stack chain to Babylon:
+
+- `CONSUMER_ID`
+- `CONSUMER_CHAIN_NAME`
+
+set your OP Stack chain's finality provider moniker
+
+- `OP_FP_MONIKER`
+
+replace the IP with the Babylon finality system you deployed server IP:
+
+- `CONSUMER_EOTS_MANAGER_ADDRESS`
+- `FINALITY_GADGET_RPC`
+
+**Configure for OP Stack chain**
+
+set your OP Stack chain's RPC URL
+
+- `L2_RPC_URL`
+
+### 2. Set Babylon keys
+
+Set the pre-funded Babylon key, used to deploy cw contract, btc-staker, register OP Stack chain, etc. Also, generate a new Babylon account for your OP Stack chain's finality provider.
+
+```bash
+make set-babylon-keys
+```
+
+### 3. Register OP Stack chain
+
+Register your OP Stack chain to Babylon.
+
+```bash
+make register-consumer-chain
+```
+
+### 4. Deploy finality contract
+
+Deploy the finality contract for your OP Stack chain.
+
+```bash
+make deploy-cw-contract
+```
+
+### 5. Start the Babylon BTC Staker
+
+Start the Babylon BTC Staker, used to create the BTC delegation for your OP Stack chain finality provider.
+
+```bash
+make start-babylon-btc-staker
+```
+
+### 6. Start the EOTS Manager
+
+Start the EOTS Manager for your OP Stack chain finality provider.
+
+```bash
+make start-consumer-eotsmanager
+```
+
+### 7. Start the Finality Provider
+
+Start your OP Stack chain's Finality Provider, and then register it to Babylon.
+
+```bash
+make start-consumer-finality-provider
+make register-op-consumer-fp
+```
+
+### 8. Start the Finality Gadget
+
+Start the Finality Gadget, which provides the query interface for BTC finalized status of your OP Stack chain's blocks.
+
+```bash
+make start-finality-gadget
+```
+
+### 9. Create BTC delegation and wait for activation
+
+Create the BTC delegation for your OP Stack chain finality provider.
+
+```bash
+make create-btc-delegation
+```
+
+Wait for the delegation activation, which takes about 3 BTC blocks, and then you can check the delegation status by the following command:
+
+```bash
+make check-btc-delegation
+```
+
+### 10. Set `enabled` to `true` in finality contract
+
+Set the `enabled` field to `true` in the finality contract for your OP Stack chain.
+
+TODO: add the command here
 
 ## Troubleshooting
 
-1. BTC wallet balance null or no unspent outputs
+### 1. BTC wallet balance null or no unspent outputs
 
 After running `verify-bitcoin-sync-balance.sh`, the BTC wallet should be loaded to bitcoind. If not, you will run into null balance or no unspent outputs errors when running `create-btc-delegations.sh`.
 
 To check the wallet balance:
 
 ```
-docker exec bitcoind /bin/sh -c "bitcoin-cli -signet -rpcuser=rpcuser -rpcpassword=rpcpass -rpcwallet=btcwallet listunspent"
+docker exec bitcoind /bin/sh -c "bitcoin-cli -signet -rpcuser=<BITCOIN_RPC_USER> -rpcpassword=<BITCOIN_RPC_PASS> -rpcwallet=<BTC_WALLET_NAME> listunspent"
 ```
 
 To check unspent outputs:
 
 ```
-docker exec bitcoind /bin/sh -c "bitcoin-cli -signet -rpcuser=rpcuser -rpcpassword=rpcpass -rpcwallet=btcwallet getbalance"
+docker exec bitcoind /bin/sh -c "bitcoin-cli -signet -rpcuser=<BITCOIN_RPC_USER> -rpcpassword=<BITCOIN_RPC_PASS> -rpcwallet=<BTC_WALLET_NAME> getbalance"
 ```
 
 If your wallet balance is 0 or you have no unspent outputs, you may need to re-load the wallet:
 
 ```
-docker exec bitcoind /bin/sh -c "bitcoin-cli -signet -rpcuser=rpcuser -rpcpassword=rpcpass -rpcwallet=btcwallet unloadwallet btcwallet"
+docker exec bitcoind /bin/sh -c "bitcoin-cli -signet -rpcuser=<BITCOIN_RPC_USER> -rpcpassword=<BITCOIN_RPC_PASS> -rpcwallet=<BTC_WALLET_NAME> unloadwallet <BTC_WALLET_NAME>"
 
-docker exec bitcoind /bin/sh -c "bitcoin-cli -signet -rpcuser=rpcuser -rpcpassword=rpcpass -rpcwallet=btcwallet loadwallet btcwallet"
+docker exec bitcoind /bin/sh -c "bitcoin-cli -signet -rpcuser=<BITCOIN_RPC_USER> -rpcpassword=<BITCOIN_RPC_PASS> -rpcwallet=<BTC_WALLET_NAME> loadwallet <BTC_WALLET_NAME>"
 ```
 
 Now recheck the balance and unspent outputs.
