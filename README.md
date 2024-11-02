@@ -169,7 +169,17 @@ Start the Finality Gadget, which provides the query interface for BTC finalized 
 make start-finality-gadget
 ```
 
-### 9. Create BTC delegation and wait for activation
+### 9. Restart OP Stack chain node
+
+Update the `BBN_FINALITY_GADGET_RPC` with the Finality Gadget's RPC URL in `.env` file in your OP Stack chain server, and then restart the `op-node` service.
+
+```bash
+BBN_FINALITY_GADGET_RPC=<FINALITY_GADGET_RPC>
+```
+
+TODO: add the restart command here
+
+### 10. Create BTC delegation and wait for activation
 
 Create the BTC delegation for your OP Stack chain finality provider.
 
@@ -183,7 +193,7 @@ Wait for the delegation activation, which takes about 3 BTC blocks, and then you
 make check-btc-delegation
 ```
 
-### 10. Set `enabled` to `true` in finality contract
+### 11. Set `enabled` to `true` in finality contract
 
 Set the `enabled` field to `true` in the finality contract for your OP Stack chain.
 
