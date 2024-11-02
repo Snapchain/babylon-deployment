@@ -39,6 +39,20 @@ services:
       - -c
       - /deploy-cw-contract.sh
 
+  # This is a one-off container just for setting the finality contract enabled value
+  set-cw-enabled-value:
+    container_name: set-cw-enabled-value
+    image: snapchain/babylon-deployment-utils:1b34d77
+    env_file:
+      - "${PWD}/.env.babylon-integration"
+    volumes:
+      - ${PWD}/.deploy/babylond:/home/.babylond
+      - ${PWD}/.deploy/contract:/home/.deploy
+    entrypoint:
+      - /bin/bash
+      - -c
+      - /set-cw-enabled-value.sh
+
   btc-staker:
     container_name: btc-staker
     # https://github.com/babylonlabs-io/btc-staker/commit/484bcb8fd9b7b0b525234d704dd049b1ef18e29f

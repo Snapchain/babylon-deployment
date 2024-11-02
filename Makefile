@@ -93,3 +93,7 @@ set-babylon-keys:
 register-consumer-chain:
 	@./scripts/babylon-integration/register-consumer-chain.sh
 .PHONY: register-consumer-chain
+
+set-cw-enabled-value:
+	@./scripts/babylon-integration/set-cw-enabled-value.sh
+.PHONY: set-cw-enabled-value
