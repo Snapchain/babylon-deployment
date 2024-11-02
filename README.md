@@ -195,9 +195,11 @@ make check-btc-delegation
 
 ### 11. Set `enabled` to `true` in finality contract
 
-Set the `enabled` field to `true` in the finality contract for your OP Stack chain.
+Set the `IS_ENABLED=true` in the `.env.babylon-integration` file and then run:
 
-TODO: add the command here
+```bash
+make set-cw-enabled-value
+```
 
 ## Troubleshooting
 
