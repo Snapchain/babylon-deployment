@@ -2,7 +2,7 @@ services:
   # This is a one-off container just for setting the Babylon keys
   set-babylon-keys:
     container_name: set-babylon-keys
-    image: snapchain/babylon-deployment-utils:1b34d77
+    image: snapchain/babylon-deployment-utils:latest
     env_file:
       - "${PWD}/.env.babylon-integration"
     volumes:
@@ -40,9 +40,9 @@ services:
       - /deploy-cw-contract.sh
 
   # This is a one-off container just for setting the finality contract enabled value
-  set-cw-enabled-value:
-    container_name: set-cw-enabled-value
-    image: snapchain/babylon-deployment-utils:1b34d77
+  toggle-cw-killswitch:
+    container_name: toggle-cw-killswitch
+    image: snapchain/babylon-deployment-utils:latest
     env_file:
       - "${PWD}/.env.babylon-integration"
     volumes:
@@ -51,7 +51,7 @@ services:
     entrypoint:
       - /bin/bash
       - -c
-      - /set-cw-enabled-value.sh
+      - /toggle-cw-killswitch.sh
 
   btc-staker:
     container_name: btc-staker
