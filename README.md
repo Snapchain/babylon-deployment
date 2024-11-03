@@ -171,7 +171,9 @@ make start-finality-gadget
 
 ### 9. Restart OP Stack chain node
 
-Login to your OP Stack chain server, update the `BBN_FINALITY_GADGET_RPC` with the Finality Gadget's gRPC(e.g `<your-server-ip>:50051`) in `.env` file.
+**Note:** This assumes your OP Stack chain was deployed using the [OP chain deployment](https://github.com/Snapchain/op-chain-deployment/blob/main/README.md) on a different server.
+
+Now login into your OP Stack chain server, update the `BBN_FINALITY_GADGET_RPC` with the Finality Gadget's gRPC(e.g `<your-server-ip>:50051`) in `.env` file.
 
 ```bash
 BBN_FINALITY_GADGET_RPC=<FINALITY_GADGET_RPC>
