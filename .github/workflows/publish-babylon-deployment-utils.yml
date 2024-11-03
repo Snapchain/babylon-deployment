@@ -3,10 +3,9 @@ name: publish-babylon-deployment-utils
 on:
   push:
     branches:
-      - feat/enable-finality
-    #   - main
-    # paths:
-    #   - 'scripts/babylon-integration/utils/**'
+      - main
+    paths:
+      - 'scripts/babylon-integration/utils/**'
 
 env:
   # Use docker.io for Docker Hub if empty
