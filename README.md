@@ -7,8 +7,6 @@
 | [git](https://git-scm.com/)      | ^2       | `git --version`       |
 | [docker](https://www.docker.com/)      | ^20       | `docker --version`       |
 | [docker compose](https://docs.docker.com/compose/)      | ^2.20       | `docker compose version`       |
-| [go](https://go.dev/)      | ^1.21       | `go version`       |
-| [foundry](https://getfoundry.sh/)      | ^0.2.0       | `forge --version`       |
 | [make](https://linux.die.net/man/1/make)      | ^3       | `make --version`       |
 | [curl](https://curl.se/)      | ^8       | `curl --version`       |
 | [jq](https://github.com/jqlang/jq)      | ^1.6       | `jq --version`       |
@@ -55,11 +53,11 @@ This section describes how to integrate Babylon finality system to Babylon Euphr
 
 Before starting the following steps, please make sure:
 
-* your Bitcoin node is synced and has a balance.
+* your Bitcoin node is synced and has a wallet that has BTC balance on your specified network.
 * your OP Stack chain is running and have at least one finalized block. For more details about how to setup OP Stack chain, please refer to the [OP chain deployment](https://github.com/Snapchain/op-chain-deployment/blob/main/README.md).
 
 
-Firstly, please claim the test tokens from the Euphrates faucet
+Firstly, please get some test tokens from the Euphrates faucet
 
 ```bash
 curl https://faucet-euphrates.devnet.babylonlabs.io/claim \
@@ -88,7 +86,7 @@ and replace the IP with your Bitcoin node IP:
 
 **Configure for Babylon**
 
-set your Babylon key's mnemonic
+set your Babylon key's mnemonic, the address should have some BBN tokens, it will be used in the following steps
 
 - `BABYLON_PREFUNDED_KEY_MNEMONIC`
 
@@ -114,7 +112,9 @@ set your OP Stack chain's RPC URL
 
 ### 2. Set Babylon keys
 
-Set the pre-funded Babylon key, used to deploy cw contract, btc-staker, register OP Stack chain, etc. Also, generate a new Babylon account for your OP Stack chain's finality provider.
+Set the pre-funded Babylon key, used to deploy cw contract, btc-staker, register OP Stack chain, etc. 
+
+Also, generate a new Babylon account for your OP Stack chain's finality provider and fund it with the previously imported pre-funded Babylon account.
 
 ```bash
 make set-babylon-keys
@@ -171,13 +171,17 @@ make start-finality-gadget
 
 ### 9. Restart OP Stack chain node
 
-Update the `BBN_FINALITY_GADGET_RPC` with the Finality Gadget's RPC URL in `.env` file in your OP Stack chain server, and then restart the `op-node` service.
+Login to your OP Stack chain server, update the `BBN_FINALITY_GADGET_RPC` with the Finality Gadget's gRPC(e.g `<your-server-ip>:50051`) in `.env` file.
 
 ```bash
 BBN_FINALITY_GADGET_RPC=<FINALITY_GADGET_RPC>
 ```
 
-TODO: add the restart command here
+And then restart the `op-node` service, run:
+
+```bash
+make l2-op-node-restart
+```
 
 ### 10. Create BTC delegation and wait for activation
 
@@ -195,10 +199,10 @@ make check-btc-delegation
 
 ### 11. Set `enabled` to `true` in finality contract
 
-Set the `IS_ENABLED=true` in the `.env.babylon-integration` file and then run:
+Once the BTC delegation is activated, set the `IS_ENABLED=true` in the `.env.babylon-integration` file and then run:
 
 ```bash
-make set-cw-enabled-value
+make toggle-cw-killswitch
 ```
 
 ## Troubleshooting
