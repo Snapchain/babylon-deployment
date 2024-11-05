@@ -100,6 +100,7 @@ Replace the IP with your server's IP in the following variables:
 - `ZMQ_RAWTX_URL`: for the Bitcoin Signet node.
 - `CONSUMER_EOTS_MANAGER_ADDRESS`
 - `FINALITY_GADGET_RPC`
+- `NEXT_PUBLIC_FINALITY_GADGET_API_URL`: for the finality explorer.
 
 Configure the following variables:
 - `BABYLON_PREFUNDED_KEY_MNEMONIC`: the mnemonic for the address you used to claim BBN tokens in the previous step.
@@ -198,6 +199,18 @@ Once the BTC delegation is activated, set the `IS_ENABLED=true` in the `.env.bab
 ```bash
 make toggle-cw-killswitch
 ```
+
+### 12. Start the finality explorer
+
+```bash
+make start-finality-explorer
+```
+
+### 13. Verify the integration
+
+You can verify the integration by creating a transaction on the L2 chain and verify it's finalization status in the finality explorer. It should take just a few seconds to be BTC-finalized, thus enabling fast finality in various use cases.
+
+If you plan to build any applications using the fast finality feature, feel free to reach out to us at [info@snapchain.dev](mailto:info@snapchain.dev).
 
 ## Troubleshooting
 
