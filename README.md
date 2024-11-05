@@ -208,7 +208,7 @@ make start-finality-explorer
 
 ### 13. Verify the integration
 
-You can verify the integration by creating a transaction on the L2 chain and verify it's finalization status in the finality explorer. It should take just a few seconds to be BTC-finalized, thus enabling fast finality in various use cases.
+You can verify the integration by creating a transaction on the L2 chain and verify its finalization status in the finality explorer. It should take just a few seconds to be BTC-finalized, thus enabling fast finality in various use cases.
 
 If you plan to build any applications using the fast finality feature, feel free to reach out to us at [info@snapchain.dev](mailto:info@snapchain.dev).
 
