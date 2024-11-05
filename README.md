@@ -1,6 +1,23 @@
-# babylon-deployment
+# BTC Staking Integration for OP-Stack Chains
+
+This guide describes how to integreate the Babylon Bitcoin Staking protocol to an OP-Stack chain.
+
+The OP-Stack chain is recommended to be deployed using https://github.com/Snapchain/op-chain-deployment.
+
+It's recommended you skim through this guide before starting the following steps.
+
+## System Recommendations
+
+The guide was tested on:
+- a Debian 12 x64 machine on Digital Ocean
+- 8GB Memory
+- 160GB Disk
+
+It's recommended you execute the following steps on a similar machine.
 
 ## Dependencies
+
+The following dependencies are required on your machine.
 
 | Dependency      | Version | Version Check Command |
 | ----------- | ----------- | ----------- |
@@ -14,14 +31,16 @@
 
 ## Setup Bitcoin node
 
+A Bitcoin node is required to run the Babylon BTC Staker. You will need to import a private key with some BTC into the Bitcoin node. If you don't have one, you can generate a new account using OKX wallet and export the private key. To get some test BTC, you can use faucets such as https://signetfaucet.com/. To integrate with Babylon Euphrates 0.5.0 devnet, you need to use the signet network.
+
 1. Copy the `.env.bitcoin.example` file to `.env.bitcoin` and set the variables
 
     ```bash
     cp .env.bitcoin.example .env.bitcoin
     ```
 
-* The `NETWORK` variable only can be either `regtest` or `signet`.
-* The `BTC_PRIVKEY` variable must be a valid Bitcoin private key in WIF format.
+    * The `NETWORK` variable can be either `regtest` or `signet`.
+    * The `BTC_PRIVKEY` variable must be a valid Bitcoin private key in WIF format.
 
 2. Start the Bitcoin node
 
@@ -35,16 +54,18 @@
     make verify-bitcoin-sync-balance
     ```
 
-4. Stop the Bitcoin node
+    Note: this step may take ~10 minutes to complete.
 
-    ```bash
-    make stop-bitcoin
-    ```
-
-5. Check the Bitcoin node logs
+If you want to check the Bitcoin node logs, you can run the following command:
 
     ```bash
     docker compose -f docker/docker-compose-bitcoin.yml logs -f bitcoind
+    ```
+
+If you want to stop the Bitcoin node (and remove the synced data), you can run the following command:
+
+    ```bash
+    make stop-bitcoin
     ```
 
 ## Integrate Babylon finality system with OP Stack chain
@@ -53,11 +74,11 @@ This section describes how to integrate Babylon finality system to Babylon Euphr
 
 Before starting the following steps, please make sure:
 
-* your Bitcoin node is synced and has a wallet that has BTC balance on your specified network.
-* your OP Stack chain is running and have at least one finalized block. For more details about how to setup OP Stack chain, please refer to the [OP chain deployment](https://github.com/Snapchain/op-chain-deployment/blob/main/README.md).
+* your Bitcoin Signet node is synced and has a wallet that has signet BTC balance.
+* your OP Stack chain is running and have at least one finalized block. For more details about how to setup an OP Stack chain with BTC staking support, please refer to the [OP chain deployment](https://github.com/Snapchain/op-chain-deployment/blob/main/README.md) repo.
 
 
-Firstly, please get some test tokens from the Euphrates faucet
+### 1. Get some test BBN tokens from the Euphrates faucet
 
 ```bash
 curl https://faucet-euphrates.devnet.babylonlabs.io/claim \
@@ -65,7 +86,7 @@ curl https://faucet-euphrates.devnet.babylonlabs.io/claim \
 -d '{ "address": "<YOUR_BABYLON_ADDRESS>"}'
 ```
 
-### 1. Setup environment variables
+### 2. Setup environment variables
 
 Copy the `.env.babylon-integration.example` file to `.env.babylon-integration`
 
