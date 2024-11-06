@@ -120,19 +120,10 @@ Besides these, you will need to set the following variables:
 
 ### 3. Set Babylon keys
 
-This step imports the pre-funded Babylon key, which will be used to deploy the different components of the Babylon finality system:
-
-- CW contract: a CosmWasm smart contract deployed on BabylonChain that enables / disables the finality gadget and stores finality votes (i.e. provides DA) for your OP-stack chain.
-- BTC Staker: a peripheral program that creates the BTC delegation for your consumer FP, and communicates with Babylon node.
-- Consumer EOTS Manager: a service that manages generation and submission of EOTS signatures for your consumer FP.
-- Consumer Finality Provider: a service that manages consumer FPs and submits finality votes to the CW contract.
-
-The prefunded Babylon account is also used for key actions such as:
-
-1. Registering your OP-Stack consumer chain on Babylon.
-2. Generates a new account for your OP-Stack chain's finality provider and funding it with BBN tokens to pay for gas when submitting finality votes.
-
-Simply run:
+This step
+- imports the pre-funded Babylon key, which will be used to deploy the finality contract, register your finality provider, create BTC delegation in later steps.
+- generates a new account for your OP-Stack chain's finality provider.
+- funds it with the pre-funded Babylon account, to pay for gas fees when submitting finality votes.
 
 ```bash
 make set-babylon-keys
@@ -158,7 +149,7 @@ Once deployed, the contract address is printed to your console and stored at `.d
 
 ### 6. Start the Babylon BTC Staker
 
-Start the Babylon BTC Staker, which isused to create the BTC delegation for your OP-Stack chain finality provider.
+Start the Babylon BTC Staker, which is used to create the BTC delegation for your OP-Stack chain finality provider.
 
 ```bash
 make start-babylon-btc-staker
