@@ -113,7 +113,7 @@ services:
 
   finality-explorer:
     container_name: finality-explorer
-    image: snapchain/finality-explorer:sha-3d96ccc
+    image: snapchain/finality-explorer:sha-3ea3cc3
     ports:
       - "13000:3000"
     env_file:
