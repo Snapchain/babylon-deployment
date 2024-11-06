@@ -98,8 +98,8 @@ services:
 
   finality-gadget:
     container_name: finality-gadget
-    # https://github.com/babylonlabs-io/finality-gadget/commit/da4903b3639c6301df732840e41e7c91c18e88cd
-    image: babylonlabs/finality-gadget:da4903b3639c6301df732840e41e7c91c18e88cd
+    # https://github.com/babylonlabs-io/finality-gadget/commit/39e3f8a5889b93fd53c31f11ab4f8b4b5829f2e6
+    image: babylonlabs/finality-gadget:39e3f8a5889b93fd53c31f11ab4f8b4b5829f2e6
     command: >
       opfgd start --cfg /home/finality-gadget/opfgd.toml
     ports:
