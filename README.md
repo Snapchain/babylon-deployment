@@ -121,6 +121,7 @@ Besides these, you will need to set the following variables:
 ### 3. Set Babylon keys
 
 This step
+
 - imports the pre-funded Babylon key, which will be used to deploy the finality contract, register your finality provider, create BTC delegation in later steps.
 - generates a new account for your OP-Stack chain's finality provider.
 - funds it with the pre-funded Babylon account, to pay for gas fees when submitting finality votes.
@@ -205,6 +206,16 @@ make check-btc-delegation
 ```
 
 ### 11. Set `enabled` to `true` in finality contract
+
+Before setting `IS_ENABLED=true`, first wait for your OP-Stack chain's finalized block to be above the BTC delegation activation height. You can check this by comparing the timestamp of the finalized block with the btc activation timestamp.
+
+```bash
+# to find the latest finalized block
+curl -sf <l2_rpc_url> -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["finalized",false],"id":1}'
+
+# to find the btc activation timestamp
+docker logs finality-gadget -f --tail 100
+```
 
 Once the BTC delegation is activated, set the `IS_ENABLED=true` in the `.env.babylon-integration` file and then run:
 
