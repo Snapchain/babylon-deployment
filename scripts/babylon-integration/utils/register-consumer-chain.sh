@@ -19,6 +19,18 @@ fi
 
 # register the consumer chain
 echo "Registering consumer chain $CONSUMER_ID..."
+echo "babylond tx btcstkconsumer register-consumer \
+    "$CONSUMER_ID" \
+    "$CONSUMER_CHAIN_NAME" \
+    --chain-id $BABYLON_CHAIN_ID \
+    --node $BABYLON_RPC_URL \
+    --from $BABYLON_PREFUNDED_KEY \
+    --keyring-dir $KEYRING_DIR \
+    --keyring-backend test \
+    --gas-prices 0.2ubbn \
+    --gas auto \
+    --gas-adjustment 2 \
+    -o json -y"
 CONSUMER_REGISTRATION_TX_HASH=$(babylond tx btcstkconsumer register-consumer \
     "$CONSUMER_ID" \
     "$CONSUMER_CHAIN_NAME" \
