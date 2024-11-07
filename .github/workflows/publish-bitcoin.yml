@@ -3,7 +3,7 @@ name: publish-bitcoin
 on:
   push:
     branches:
-      - main
+      - chore/improvements
     paths:
       - 'scripts/bitcoin/**'
 
