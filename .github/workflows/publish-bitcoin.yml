@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - chore/improvements
-    paths:
-      - 'scripts/bitcoin/**'
+    # paths:
+    #   - 'scripts/bitcoin/**'
 
 env:
   # Use docker.io for Docker Hub if empty
