@@ -32,6 +32,9 @@ echo
 sleep 5
 
 echo "Registering OP consumer finality provider..."
-docker exec consumer-finality-provider /bin/sh \
-    -c "/bin/fpd register-finality-provider $OP_FP_EOTS_PK_HEX"
+OP_FP_REGISTRATION_TX_OUTPUT=$(docker exec consumer-finality-provider /bin/sh \
+    -c "/bin/fpd register-finality-provider $OP_FP_EOTS_PK_HEX")
+echo "OP consumer finality provider registration tx output: $OP_FP_REGISTRATION_TX_OUTPUT"
+OP_FP_REGISTRATION_TX_HASH=$(echo "$OP_FP_REGISTRATION_TX_OUTPUT" | jq -r '.tx_hash')
+echo "OP consumer finality provider registration tx hash: $OP_FP_REGISTRATION_TX_HASH"
 echo

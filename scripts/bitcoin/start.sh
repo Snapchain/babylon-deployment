@@ -5,6 +5,7 @@ set -euo pipefail
 set -a
 source "$(pwd)/.env.bitcoin"
 set +a
+RPC_USER=snapchain
 
 # Start the bitcoin container
 echo "Starting the bitcoin container..."

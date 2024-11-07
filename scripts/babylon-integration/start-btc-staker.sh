@@ -6,6 +6,12 @@ set -a
 source $(pwd)/.env.babylon-integration
 set +a
 
+BITCOIN_RPC_HOST=${BITCOIN_RPC_IP}:${BITCOIN_RPC_PORT}
+BITCOIN_RPC_USER=snapchain
+BTC_WALLET_NAME=btcwallet
+ZMQ_RAWBLOCK_URL=tcp://${BITCOIN_RPC_IP}:29001
+ZMQ_RAWTR_URL=tcp://${BITCOIN_RPC_IP}:29002
+
 EXAMPLE_BTC_STAKER_CONF=$(pwd)/configs/babylon-integration/stakerd.conf
 BTC_STAKER_DIR=$(pwd)/.btc-staker
 BTC_STAKER_CONF=$(pwd)/.btc-staker/stakerd.conf
