@@ -121,6 +121,7 @@ Besides these, you will need to set the following variables:
 ### 3. Set Babylon keys
 
 This step
+
 - imports the pre-funded Babylon key, which will be used to deploy the finality contract, register your finality provider, create BTC delegation in later steps.
 - generates a new account for your OP-Stack chain's finality provider.
 - funds it with the pre-funded Babylon account, to pay for gas fees when submitting finality votes.
@@ -206,6 +207,16 @@ make check-btc-delegation
 
 ### 11. Set `enabled` to `true` in finality contract
 
+Before setting `IS_ENABLED=true`, first wait for your OP-Stack chain's finalized block to be above the BTC delegation activation height. You can check this by comparing the timestamp of the finalized block with the btc activation timestamp.
+
+```bash
+# to find the latest finalized block
+curl -sf <l2_rpc_url> -X POST -H "Content-Type: application/json" -d '{"jsonrpc":"2.0","method":"eth_getBlockByNumber","params":["finalized",false],"id":1}'
+
+# to find the btc activation timestamp
+docker logs finality-gadget -f --tail 100
+```
+
 Once the BTC delegation is activated, set the `IS_ENABLED=true` in the `.env.babylon-integration` file and then run:
 
 ```bash
@@ -259,3 +270,31 @@ docker exec bitcoind /bin/sh -c "bitcoin-cli -signet -rpcuser=<BITCOIN_RPC_USER>
 ```
 
 Now recheck the balance and unspent outputs.
+
+### 2. Consumer FP insufficient balance
+
+You need to maintain a sufficient balance on your consumer FP Babylon account. To check the balance:
+
+```bash
+# find <hash>.address file
+ls .consumer-finality-provider/keyring-test
+
+# parse wallet address (first returned entry)
+babylond keys parse <hash>
+
+# check balance
+babylond query bank balance <address> ubbn --chain-id euphrates-0.5.0 --node https://rpc-euphrates.devnet.babylonlabs.io:443
+```
+
+If your consumer FP has insufficient balance to submit finality votes / commit pub rands, the FG may become stuck. To fix this:
+
+1. Funding the consumer FP
+2. Restart it by running `make restart-consumer-finality-provider`
+
+At this point, FG may no longer be advancing because FP skips submitting the finality votes that it missed. If so, you need to reset the FG as follows:
+
+1. Toggle the CW contract off. You can do so by setting `IS_ENABLED=false` in `.env.babylon-integration` and running `make toggle-cw-killswitch`.
+2. Wait for the finalized block to advance pass the last height with skipped finality votes. You can check this by running `docker logs consumer-finality-provider | grep "Successfully submitted finality votes"`.
+3. Restart the FG from scratch by running `make stop-finality-gadget && make start-finality-gadget`
+4. Toggle the CW contract back on. Set `IS_ENABLED=true` in `.env.babylon-integration` and running `make toggle-cw-killswitch`.
+5. Wait for consumer FP and FG to catch up.

@@ -98,8 +98,8 @@ services:
 
   finality-gadget:
     container_name: finality-gadget
-    # https://github.com/babylonlabs-io/finality-gadget/commit/9f7ee4c7c9ba7b07645a9aa3f79dc88987b0815a
-    image: babylonlabs/finality-gadget:9f7ee4c7c9ba7b07645a9aa3f79dc88987b0815a
+    # https://github.com/babylonlabs-io/finality-gadget/commit/8bdd24c7d32e7ffb8fe06cebcb571cb2ce52db12
+    image: babylonlabs/finality-gadget:8bdd24c7d32e7ffb8fe06cebcb571cb2ce52db12
     command: >
       opfgd start --cfg /home/finality-gadget/opfgd.toml
     ports:
@@ -113,7 +113,7 @@ services:
 
   finality-explorer:
     container_name: finality-explorer
-    image: snapchain/finality-explorer:sha-3d96ccc
+    image: snapchain/finality-explorer:sha-3ea3cc3
     ports:
       - "13000:3000"
     env_file:
