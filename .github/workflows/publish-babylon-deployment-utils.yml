@@ -3,7 +3,7 @@ name: publish-babylon-deployment-utils
 on:
   push:
     branches:
-      - chore/improvements
+      - main
     paths:
       - 'scripts/babylon-integration/utils/**'
 
