@@ -270,3 +270,31 @@ docker exec bitcoind /bin/sh -c "bitcoin-cli -signet -rpcuser=<BITCOIN_RPC_USER>
 ```
 
 Now recheck the balance and unspent outputs.
+
+### 2. Consumer FP insufficient balance
+
+You need to maintain a sufficient balance on your consumer FP Babylon account. To check the balance:
+
+```bash
+# find <hash>.address file
+ls .consumer-finality-provider/keyring-test
+
+# parse wallet address (first returned entry)
+babylond keys parse <hash>
+
+# check balance
+babylond query bank balance <address> ubbn --chain-id euphrates-0.5.0 --node https://rpc-euphrates.devnet.babylonlabs.io:443
+```
+
+If your consumer FP has insufficient balance to submit finality votes / commit pub rands, the FG may become stuck. To fix this:
+
+1. Funding the consumer FP
+2. Restart it by running `make restart-consumer-finality-provider`
+
+At this point, FG may no longer be advancing because FP skips submitting the finality votes that it missed. If so, you need to reset the FG as follows:
+
+1. Toggle the CW contract off. You can do so by setting `IS_ENABLED=false` in `.env.babylon-integration` and running `make toggle-cw-killswitch`.
+2. Wait for the finalized block to advance pass the last height with skipped finality votes. You can check this by running `docker logs consumer-finality-provider | grep "Successfully submitted finality votes"`.
+3. Restart the FG from scratch by running `make stop-finality-gadget && make start-finality-gadget`
+4. Toggle the CW contract back on. Set `IS_ENABLED=true` in `.env.babylon-integration` and running `make toggle-cw-killswitch`.
+5. Wait for consumer FP and FG to catch up.
