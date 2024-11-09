@@ -53,6 +53,18 @@ services:
       - -c
       - /toggle-cw-killswitch.sh
 
+  teardown:
+    container_name: teardown
+    image: # TODO: add this
+    env_file:
+      - "${PWD}/.env.babylon-integration"
+    volumes:
+      - ${PWD}/.deploy/babylond:/home/.babylond
+    entrypoint:
+      - /bin/bash
+      - -c
+      - /teardown.sh
+
   btc-staker:
     container_name: btc-staker
     # https://github.com/babylonlabs-io/btc-staker/commit/484bcb8fd9b7b0b525234d704dd049b1ef18e29f

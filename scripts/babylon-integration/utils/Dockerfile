@@ -27,3 +27,4 @@ COPY register-consumer-chain.sh /register-consumer-chain.sh
 COPY common.sh /common.sh
 COPY deploy-cw-contract.sh /deploy-cw-contract.sh
 COPY toggle-cw-killswitch.sh /toggle-cw-killswitch.sh
+COPY teardown.sh /teardown.sh
