@@ -7,7 +7,7 @@ source "./common.sh"
 CONSUMER_FP_KEYRING_DIR=/home/finality-provider/.fpd
 KEYRING_FILENAME=$(ls $CONSUMER_FP_KEYRING_DIR/keyring-test | grep '\.address$' | sed 's/\.address$//')
 echo "Keyring filename: $KEYRING_FILENAME"
-CONSUMER_FP_ADDRESS=$(babylond keys parse "$KEYRING_FILENAME" | grep -o '^[^- ]*' | head -n 1)
+CONSUMER_FP_ADDRESS=$(babylond keys parse "$KEYRING_FILENAME" --output json | jq -r '.formats[0]')
 echo "Consumer FP address: $CONSUMER_FP_ADDRESS"
 
 # Get the prefunded key address
@@ -35,7 +35,7 @@ fi
 # Otherwise, send out funds to prefunded key
 # Reserve 0.001 bbn = 1000 ubbn for gas
 AMOUNT_TO_SEND=$((CONSUMER_FP_BALANCE - TRANSFER_GAS_COST))
-echo "Sending funds to prefunded key..."
+echo "Sending $AMOUNT_TO_SEND ubbn to prefunded key..."
 SEND_TX_HASH=$(babylond tx bank send "$CONSUMER_FP_ADDRESS" "$PREFUNDED_ADDRESS" "$AMOUNT_TO_SEND"ubbn \
     --keyring-dir "$CONSUMER_FP_KEYRING_DIR" \
     --chain-id $BABYLON_CHAIN_ID \
