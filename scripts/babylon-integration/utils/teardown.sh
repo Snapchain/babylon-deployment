@@ -5,7 +5,8 @@ source "./common.sh"
 
 # Get the consumer FP address
 CONSUMER_FP_KEYRING_DIR=/home/finality-provider/.fpd
-KEYRING_FILENAME=$(ls $CONSUMER_FP_KEYRING_DIR/keyring-test | grep '\.address$')
+KEYRING_FILENAME=$(ls $CONSUMER_FP_KEYRING_DIR/keyring-test | grep '\.address$' | sed 's/\.address$//')
+echo "Keyring filename: $KEYRING_FILENAME"
 CONSUMER_FP_ADDRESS=$(babylond keys parse "$KEYRING_FILENAME" | grep -o '^[^- ]*' | head -n 1)
 echo "Consumer FP address: $CONSUMER_FP_ADDRESS"
 
