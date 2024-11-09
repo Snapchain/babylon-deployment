@@ -55,7 +55,7 @@ services:
 
   teardown:
     container_name: teardown
-    image: snapchain/babylon-deployment-utils:7199cfd
+    image: snapchain/babylon-deployment-utils:068c826
     env_file:
       - "${PWD}/.env.babylon-integration"
     volumes:
