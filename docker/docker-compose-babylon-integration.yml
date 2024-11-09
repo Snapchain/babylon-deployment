@@ -60,6 +60,7 @@ services:
       - "${PWD}/.env.babylon-integration"
     volumes:
       - ${PWD}/.deploy/babylond:/home/.babylond
+      - ${PWD}/.consumer-finality-provider:/home/finality-provider/.fpd
     entrypoint:
       - /bin/bash
       - -c

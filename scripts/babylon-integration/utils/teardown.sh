@@ -4,14 +4,15 @@ set -uo pipefail
 source "./common.sh"
 
 # Get the consumer FP address
-KEYRING_FILENAME=$(ls .consumer-finality-provider/keyring-test | grep '\.address$')
+CONSUMER_FP_KEYRING_DIR=/home/finality-provider/.fpd
+KEYRING_FILENAME=$(ls $CONSUMER_FP_KEYRING_DIR/keyring-test | grep '\.address$')
 CONSUMER_FP_ADDRESS=$(babylond keys parse "$KEYRING_FILENAME" | grep -o '^[^- ]*' | head -n 1)
 echo "Consumer FP address: $CONSUMER_FP_ADDRESS"
 
 # Get the prefunded key address
-KEYRING_DIR=/home/.babylond
+PREFUNDED_KEYRING_DIR=/home/.babylond
 PREFUNDED_ADDRESS=$(babylond keys show "$BABYLON_PREFUNDED_KEY" \
-    --keyring-dir "$KEYRING_DIR" \
+    --keyring-dir "$PREFUNDED_KEYRING_DIR" \
     --keyring-backend test \
     --output json \
     | jq -r '.address')
@@ -35,10 +36,10 @@ fi
 AMOUNT_TO_SEND=$((CONSUMER_FP_BALANCE - TRANSFER_GAS_COST))
 echo "Sending funds to prefunded key..."
 SEND_TX_HASH=$(babylond tx bank send "$CONSUMER_FP_ADDRESS" "$PREFUNDED_ADDRESS" "$AMOUNT_TO_SEND"ubbn \
-    --keyring-dir "$KEYRING_DIR" \
+    --keyring-dir "$CONSUMER_FP_KEYRING_DIR" \
+    --chain-id $BABYLON_CHAIN_ID \
+    --node $BABYLON_RPC_URL \
     --keyring-backend test \
-    --chain-id "$BABYLON_CHAIN_ID" \
-    --node "$BABYLON_RPC_URL" \
     --gas auto \
     --gas-adjustment 1.5 \
     --gas-prices 0.2ubbn \
