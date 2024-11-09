@@ -5,8 +5,6 @@ set -euo pipefail
 set -a
 source $(pwd)/.env.bitcoin
 set +a
-RPC_USER=snapchain
-BTC_WALLET_NAME=btcwallet
 
 if [ -z "$(echo ${BTC_WALLET_PASS})" ] || [ -z "$(echo ${BTC_PRIVKEY})" ]; then
     echo "Error: BTC_WALLET_PASS or BTC_PRIVKEY environment variable is not set"

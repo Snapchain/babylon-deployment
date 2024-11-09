@@ -1,11 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-RPC_USER=snapchain
-ZMQ_SEQUENCE_PORT=29000
-ZMQ_RAWBLOCK_PORT=29001
-ZMQ_RAWTR_PORT=29002
-
 echo "NETWORK: $NETWORK"
 echo "RPC_PORT: $RPC_PORT"
 

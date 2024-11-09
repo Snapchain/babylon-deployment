@@ -6,9 +6,6 @@ set -a
 source $(pwd)/.env.babylon-integration
 set +a
 
-BITCOIN_RPC_HOST=${BITCOIN_RPC_IP}:${BITCOIN_RPC_PORT}
-BITCOIN_RPC_USER=snapchain
-
 EXAMPLE_FINALITY_GADGET_CONF=$(pwd)/configs/babylon-integration/opfgd.toml
 FINALITY_GADGET_DIR=$(pwd)/.finality-gadget
 FINALITY_GADGET_CONF=$(pwd)/.finality-gadget/opfgd.toml

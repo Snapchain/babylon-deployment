@@ -1,9 +1,6 @@
 #!/bin/bash
 set -euo pipefail
 
-RPC_USER=snapchain
-BTC_WALLET_NAME=btcwallet
-
 echo "NETWORK: $NETWORK"
 echo "BTC_WALLET_NAME: $BTC_WALLET_NAME"
 
