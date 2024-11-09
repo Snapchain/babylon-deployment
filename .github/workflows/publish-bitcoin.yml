@@ -3,9 +3,10 @@ name: publish-bitcoin
 on:
   push:
     branches:
-      - main
-    paths:
-      - 'scripts/bitcoin/**'
+      - chore/improvements
+    #   - main
+    # paths:
+    #   - 'scripts/bitcoin/**'
 
 env:
   # Use docker.io for Docker Hub if empty
