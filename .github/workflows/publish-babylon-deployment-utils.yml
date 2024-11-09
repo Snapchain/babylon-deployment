@@ -5,7 +5,7 @@ on:
     branches:
       - main
       # TODO: remove this temp branch once merged
-      # - feat/teardown-script
+      - feat/teardown-script
     paths:
       - 'scripts/babylon-integration/utils/**'
 
