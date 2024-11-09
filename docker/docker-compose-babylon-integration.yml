@@ -55,7 +55,7 @@ services:
 
   teardown:
     container_name: teardown
-    image: # TODO: add this
+    image: snapchain/babylon-deployment-utils:58120ec
     env_file:
       - "${PWD}/.env.babylon-integration"
     volumes:
