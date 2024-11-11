@@ -36,15 +36,18 @@ fi
 # Reserve 0.001 bbn = 1000 ubbn for gas
 AMOUNT_TO_SEND=$((CONSUMER_FP_BALANCE - TRANSFER_GAS_COST))
 echo "Sending $AMOUNT_TO_SEND ubbn to prefunded key..."
-SEND_TX_HASH=$(babylond tx bank send "$CONSUMER_FP_ADDRESS" "$PREFUNDED_ADDRESS" "$AMOUNT_TO_SEND"ubbn \
-    --keyring-dir "$CONSUMER_FP_KEYRING_DIR" \
+SEND_TX_HASH=$(babylond tx bank send \
+    ${CONSUMER_FP_ADDRESS} \
+    ${PREFUNDED_ADDRESS} \
+    "${AMOUNT_TO_SEND}ubbn" \
+    --keyring-dir $CONSUMER_FP_KEYRING_DIR \
+    --keyring-backend test \
     --chain-id $BABYLON_CHAIN_ID \
     --node $BABYLON_RPC_URL \
-    --keyring-backend test \
     --gas auto \
     --gas-adjustment 1.5 \
     --gas-prices 0.2ubbn \
-    --dry-run \ # TODO: remove this once ready
+    --dry-run \
     --output json -y \
     | jq -r '.txhash')
 
