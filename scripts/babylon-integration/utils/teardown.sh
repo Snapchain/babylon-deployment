@@ -4,16 +4,16 @@ set -uo pipefail
 source "./common.sh"
 
 # Get the consumer FP address
-CONSUMER_FP_KEYRING_DIR=/home/finality-provider/.fpd
-KEYRING_FILENAME=$(ls $CONSUMER_FP_KEYRING_DIR/keyring-test | grep '\.address$' | sed 's/\.address$//')
+CONSUMER_FP_DIR=/home/finality-provider/.fpd
+KEYRING_FILENAME=$(ls $CONSUMER_FP_DIR/keyring-test | grep '\.address$' | sed 's/\.address$//')
 echo "Keyring filename: $KEYRING_FILENAME"
 CONSUMER_FP_ADDRESS=$(babylond keys parse "$KEYRING_FILENAME" --output json | jq -r '.formats[0]')
 echo "Consumer FP address: $CONSUMER_FP_ADDRESS"
 
 # Get the prefunded key address
-PREFUNDED_KEYRING_DIR=/home/.babylond
+KEYRING_DIR=/home/.babylond
 PREFUNDED_ADDRESS=$(babylond keys show "$BABYLON_PREFUNDED_KEY" \
-    --keyring-dir "$PREFUNDED_KEYRING_DIR" \
+    --keyring-dir "$KEYRING_DIR" \
     --keyring-backend test \
     --output json \
     | jq -r '.address')
@@ -34,10 +34,12 @@ fi
 
 # Otherwise, send out funds to prefunded key
 # Reserve 0.001 bbn = 1000 ubbn for gas
+CONSUMER_FP_KEYRING_DIR=$KEYRING_DIR/$CONSUMER_FINALITY_PROVIDER_KEY
 AMOUNT_TO_SEND=$((CONSUMER_FP_BALANCE - TRANSFER_GAS_COST))
 echo "Sending $AMOUNT_TO_SEND ubbn to prefunded key..."
+echo "Consumer FP keyring dir: $CONSUMER_FP_KEYRING_DIR"
 SEND_TX_HASH=$(babylond tx bank send \
-    ${CONSUMER_FP_ADDRESS} \
+    ${CONSUMER_FINALITY_PROVIDER_KEY} \
     ${PREFUNDED_ADDRESS} \
     "${AMOUNT_TO_SEND}ubbn" \
     --keyring-dir $CONSUMER_FP_KEYRING_DIR \
