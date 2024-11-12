@@ -18,9 +18,12 @@ if echo "$CONSUMER_IDS" | grep -q "^${CONSUMER_ID}$"; then
 fi
 
 # register the consumer chain
+# TODO: for now, we can use the consumer chain name as the consumer description,
+# remove it after issue #255 (https://github.com/babylonlabs-io/babylon/issues/255) is fixed
 echo "Registering consumer chain $CONSUMER_ID..."
 CONSUMER_REGISTRATION_TX_HASH=$(babylond tx btcstkconsumer register-consumer \
     "$CONSUMER_ID" \
+    "$CONSUMER_CHAIN_NAME" \
     "$CONSUMER_CHAIN_NAME" \
     --chain-id $BABYLON_CHAIN_ID \
     --node $BABYLON_RPC_URL \
