@@ -97,3 +97,7 @@ register-consumer-chain:
 toggle-cw-killswitch:
 	@./scripts/babylon-integration/toggle-cw-killswitch.sh
 .PHONY: toggle-cw-killswitch
+
+teardown:
+	@./scripts/babylon-integration/teardown.sh
+.PHONY: teardown
