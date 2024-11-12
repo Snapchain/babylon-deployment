@@ -49,7 +49,6 @@ SEND_TX_HASH=$(babylond tx bank send \
     --gas auto \
     --gas-adjustment 1.5 \
     --gas-prices 0.2ubbn \
-    --dry-run \
     --output json -y \
     | jq -r '.txhash')
 
