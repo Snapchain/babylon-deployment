@@ -38,7 +38,7 @@ fi
 AMOUNT_TO_SEND=$((CONSUMER_FP_BALANCE - TRANSFER_GAS_COST))
 echo "Sending $AMOUNT_TO_SEND ubbn to prefunded key..."
 echo "Consumer FP keyring dir: $CONSUMER_FP_KEYRING_DIR"
-SEND_TX_HASH=$(babylond tx bank send \
+SEND_TX_OUTPUT=$(babylond tx bank send \
     ${CONSUMER_FINALITY_PROVIDER_KEY} \
     ${PREFUNDED_ADDRESS} \
     "${AMOUNT_TO_SEND}ubbn" \
@@ -49,9 +49,9 @@ SEND_TX_HASH=$(babylond tx bank send \
     --gas auto \
     --gas-adjustment 1.5 \
     --gas-prices 0.2ubbn \
-    --output json -y \
-    | jq -r '.txhash')
-
+    --output json -y)
+echo "$SEND_TX_OUTPUT"
+SEND_TX_HASH=$(echo "$SEND_TX_OUTPUT" | jq -r '.txhash')
 
 # Wait for transaction to complete
 if ! wait_for_tx "$SEND_TX_HASH" 10 3; then
