@@ -26,7 +26,7 @@ CONSUMER_FP_BALANCE=$(babylond query bank balances "$CONSUMER_FP_ADDRESS" \
 echo "Consumer FP balance: $CONSUMER_FP_BALANCE"
 
 # If balance is less than gas transfer cost, don't send funds
-TRANSFER_GAS_COST=1000
+TRANSFER_GAS_COST=10000
 if [ "$CONSUMER_FP_BALANCE" -lt "$TRANSFER_GAS_COST" ]; then
     echo "Consumer FP balance is less than gas transfer cost, skipping funds transfer"
     exit 0
@@ -46,9 +46,6 @@ SEND_TX_HASH=$(babylond tx bank send \
     --keyring-backend test \
     --chain-id $BABYLON_CHAIN_ID \
     --node $BABYLON_RPC_URL \
-    --gas auto \
-    --gas-adjustment 1.5 \
-    --gas-prices 0.2ubbn \
     --output json -y \
     | jq -r '.txhash')
 
