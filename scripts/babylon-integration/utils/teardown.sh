@@ -6,8 +6,6 @@ source "./common.sh"
 # Get the consumer FP address
 KEYRING_DIR=/home/.babylond
 CONSUMER_FP_KEYRING_DIR=$KEYRING_DIR/$CONSUMER_FINALITY_PROVIDER_KEY
-KEYRING_FILENAME=$(ls $CONSUMER_FP_KEYRING_DIR/keyring-test | grep '\.address$' | sed 's/\.address$//')
-echo "Keyring filename: $KEYRING_FILENAME"
 CONSUMER_FP_ADDRESS=$(babylond keys show -a consumer-finality-provider \
     --keyring-dir $CONSUMER_FP_KEYRING_DIR \
     --keyring-backend test)
@@ -67,4 +65,5 @@ echo
 FINAL_BALANCE=$(babylond query bank balances "$CONSUMER_FP_ADDRESS" \
     --node "$BABYLON_RPC_URL" \
     -o json | jq -r '.balances[0].amount')
+echo "Initial consumer FP balance: $CONSUMER_FP_BALANCE"
 echo "Final consumer FP balance: $FINAL_BALANCE"
