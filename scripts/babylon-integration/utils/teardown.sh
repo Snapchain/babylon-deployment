@@ -5,8 +5,8 @@ source "./common.sh"
 
 # Get the consumer FP address
 KEYRING_DIR=/home/.babylond
-CONSUMER_FP_KEYRING_DIR=$KEYRING_DIR/$CONSUMER_FINALITY_PROVIDER_KEY
-CONSUMER_FP_ADDRESS=$(babylond keys show -a consumer-finality-provider \
+CONSUMER_FP_KEYRING_DIR=/home/.consumer-finality-provider
+CONSUMER_FP_ADDRESS=$(babylond keys show -a $CONSUMER_FINALITY_PROVIDER_KEY \
     --keyring-dir $CONSUMER_FP_KEYRING_DIR \
     --keyring-backend test)
 echo "Consumer FP address: $CONSUMER_FP_ADDRESS"

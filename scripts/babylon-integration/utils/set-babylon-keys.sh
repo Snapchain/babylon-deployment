@@ -5,9 +5,16 @@ set -euo pipefail
 echo "Setting Babylon keys..."
 # Set keyring directory
 KEYRING_DIR=/home/.babylond
+CONSUMER_FP_KEYRING_DIR=/home/.consumer-finality-provider
+
 if [ ! -d "$KEYRING_DIR" ]; then
-    echo "Creating directory $KEYRING_DIR"
+    echo "Creating prefunded keyring directory $KEYRING_DIR"
     mkdir -p $KEYRING_DIR
+fi
+
+if [ ! -d "$CONSUMER_FP_KEYRING_DIR" ]; then
+    echo "Creating consumer-finality-provider keyring directory $CONSUMER_FP_KEYRING_DIR"
+    mkdir -p $CONSUMER_FP_KEYRING_DIR
 fi
 
 # Import the Babylon prefunded key
@@ -22,10 +29,7 @@ fi
 echo
 
 # Create new Babylon account for the consumer-finality-provider
-CONSUMER_FP_KEYRING_DIR=$KEYRING_DIR/$CONSUMER_FINALITY_PROVIDER_KEY
 if ! babylond keys show $CONSUMER_FINALITY_PROVIDER_KEY --keyring-dir $CONSUMER_FP_KEYRING_DIR --keyring-backend test &> /dev/null; then
-    echo "Creating keyring directory $CONSUMER_FP_KEYRING_DIR"
-    mkdir -p $CONSUMER_FP_KEYRING_DIR
     echo "Creating key $CONSUMER_FINALITY_PROVIDER_KEY..."
     babylond keys add $CONSUMER_FINALITY_PROVIDER_KEY \
         --keyring-dir $CONSUMER_FP_KEYRING_DIR \
