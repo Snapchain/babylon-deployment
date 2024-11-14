@@ -60,7 +60,7 @@ FUND_TX_HASH=$(babylond tx bank send \
     --keyring-dir $KEYRING_DIR \
     --keyring-backend test \
     --gas auto \
-    --gas-adjustment 1.5 \
+    --gas-adjustment 2 \
     --gas-prices 0.2ubbn \
     --output json -y \
     | jq -r '.txhash')

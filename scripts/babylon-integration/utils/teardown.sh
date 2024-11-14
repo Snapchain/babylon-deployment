@@ -45,7 +45,7 @@ SEND_TX_OUTPUT=$(babylond tx bank send \
     --chain-id $BABYLON_CHAIN_ID \
     --node $BABYLON_RPC_URL \
     --gas auto \
-    --gas-adjustment 1.5 \
+    --gas-adjustment 2 \
     --gas-prices 0.2ubbn \
     --output json -y)
 echo "$SEND_TX_OUTPUT"

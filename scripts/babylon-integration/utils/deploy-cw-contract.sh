@@ -32,7 +32,7 @@ echo "Storing contract..."
 STORE_TX_HASH=$(babylond tx wasm store $CONTRACT_PATH \
     --gas-prices 0.2ubbn \
     --gas auto \
-    --gas-adjustment 1.3 \
+    --gas-adjustment 2 \
     --from $BABYLON_PREFUNDED_KEY \
     --keyring-dir $KEYRING_DIR \
     --chain-id $BABYLON_CHAIN_ID \
@@ -72,7 +72,7 @@ echo "Instantiate message JSON: $INSTANTIATE_MSG_JSON"
 DEPLOY_TX_HASH=$(babylond tx wasm instantiate $CODE "$INSTANTIATE_MSG_JSON" \
     --gas-prices 0.2ubbn \
     --gas auto \
-    --gas-adjustment 1.3 \
+    --gas-adjustment 2 \
     --label $CONTRACT_LABEL \
     --admin $CONTRACT_ADMIN_ADDRESS \
     --from $BABYLON_PREFUNDED_KEY \

@@ -19,7 +19,7 @@ SET_ENABLED_TX_OUTPUT=$(babylond tx wasm execute $CONTRACT_ADDR \
     '{"set_enabled":{"enabled":'$IS_ENABLED'}}' \
     --gas-prices 0.2ubbn \
     --gas auto \
-    --gas-adjustment 1.3 \
+    --gas-adjustment 2 \
     --from $BABYLON_PREFUNDED_KEY \
     --keyring-dir $KEYRING_DIR \
     --chain-id $BABYLON_CHAIN_ID \
