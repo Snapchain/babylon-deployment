@@ -21,7 +21,7 @@ fi
 # TODO: for now, we can use the consumer chain name as the consumer description,
 # remove it after issue #255 (https://github.com/babylonlabs-io/babylon/issues/255) is fixed
 echo "Registering consumer chain $CONSUMER_ID..."
-CONSUMER_REGISTRATION_TX_HASH=$(babylond tx btcstkconsumer register-consumer \
+CONSUMER_REGISTRATION_OUTPUT=$(babylond tx btcstkconsumer register-consumer \
     "$CONSUMER_ID" \
     "$CONSUMER_CHAIN_NAME" \
     "$CONSUMER_CHAIN_NAME" \
@@ -33,8 +33,11 @@ CONSUMER_REGISTRATION_TX_HASH=$(babylond tx btcstkconsumer register-consumer \
     --gas-prices 0.2ubbn \
     --gas auto \
     --gas-adjustment 2 \
-    -o json -y \
-    | jq -r '.txhash')
+    -o json -y)
+echo "$CONSUMER_REGISTRATION_OUTPUT"
+echo
+
+CONSUMER_REGISTRATION_TX_HASH=$(echo "$CONSUMER_REGISTRATION_OUTPUT" | jq -r '.txhash')
 echo "Consumer registration transaction hash: $CONSUMER_REGISTRATION_TX_HASH"
 echo
 
