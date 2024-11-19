@@ -11,7 +11,7 @@ CONSUMER_FINALITY_PROVIDER_DIR=$(pwd)/.consumer-finality-provider
 FINALITY_PROVIDER_CONF=$(pwd)/.consumer-finality-provider/fpd.conf
 
 # Check if the finality provider key exists in the mounted .consumer-finality-provider directory
-if ! babylond keys show $CONSUMER_FINALITY_PROVIDER_KEY --keyring-dir $CONSUMER_FINALITY_PROVIDER_DIR --keyring-backend test &> /dev/null; then
+if [ ! -f "$CONSUMER_FINALITY_PROVIDER_DIR/keyring-test/$CONSUMER_FINALITY_PROVIDER_KEY.info" ]; then
   echo "The finality provider key $CONSUMER_FINALITY_PROVIDER_KEY does not exist in directory $CONSUMER_FINALITY_PROVIDER_DIR"
   exit 1
 fi
