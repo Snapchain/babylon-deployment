@@ -33,5 +33,14 @@ create_dns_records() {
         }"
 }
 
-# finality gadget RPC, demo app, finality explorer
+# 1. create the DNS records for the subdomains
+# (finality gadget RPC, demo app, finality explorer)
 create_dns_records "finality-rpc" "demo" "finality"
+
+# 2. obtain the SSL certificate for each subdomain
+# the certs and keys will be stored in /etc/letsencrypt/live/
+# reference: https://eff-certbot.readthedocs.io/en/latest/using.html
+sudo certbot certonly --nginx --non-interactive --agree-tos -m ${CERTBOT_EMAIL} \
+  -d finality-rpc.${CERTBOT_DOMAIN_SUFFIX} \
+  -d demo.${CERTBOT_DOMAIN_SUFFIX} \
+  -d finality.${CERTBOT_DOMAIN_SUFFIX}
