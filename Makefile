@@ -101,3 +101,7 @@ toggle-cw-killswitch:
 teardown:
 	@./scripts/babylon-integration/teardown.sh
 .PHONY: teardown
+
+dns-setup:
+	@./scripts/babylon-integration/dns-setup.sh
+.PHONY: dns-setup
