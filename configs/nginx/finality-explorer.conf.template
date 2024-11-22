@@ -1,0 +1,16 @@
+server {
+    listen 443 ssl;
+    server_name finality.${CERTBOT_DOMAIN_SUFFIX};
+
+    ssl_certificate /etc/letsencrypt/live/${CERTBOT_DOMAIN_SUFFIX}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${CERTBOT_DOMAIN_SUFFIX}/privkey.pem;
+
+    location / {
+        proxy_pass http://localhost:13000; # replace host as needed
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+    }
+}
