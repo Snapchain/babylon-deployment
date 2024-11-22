@@ -38,9 +38,13 @@ create_dns_records() {
 create_dns_records "finality-rpc" "demo" "finality"
 
 # 2. obtain the SSL certificate for each subdomain
-# the certs and keys will be stored in /etc/letsencrypt/live/
+# the certs will be stored in /etc/letsencrypt/live/ in a single file
+# after running the command, you can verify by:
+#   sudo openssl x509 -in /etc/letsencrypt/live/${CERTBOT_DOMAIN_SUFFIX}/fullchain.pem -text | grep DNS:
+# 
 # reference: https://eff-certbot.readthedocs.io/en/latest/using.html
 sudo certbot certonly --nginx --non-interactive --agree-tos -m ${CERTBOT_EMAIL} \
+  --cert-name ${CERTBOT_DOMAIN_SUFFIX} \
   -d finality-rpc.${CERTBOT_DOMAIN_SUFFIX} \
   -d demo.${CERTBOT_DOMAIN_SUFFIX} \
   -d finality.${CERTBOT_DOMAIN_SUFFIX}
