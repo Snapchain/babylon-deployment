@@ -38,7 +38,11 @@ create_dns_records() {
 create_dns_records "finality-rpc" "demo" "finality"
 
 # 2. obtain the SSL certificate for each subdomain
-# the certs will be stored in /etc/letsencrypt/live/ in a single file
+# the certs will be stored in /etc/letsencrypt/live/${CERTBOT_DOMAIN_SUFFIX}
+# 
+# note that Certbot creates a single certificate that's valid for all those 
+# domains (called a SAN - Subject Alternative Names certificate)
+# 
 # after running the command, you can verify by:
 #   sudo openssl x509 -in /etc/letsencrypt/live/${CERTBOT_DOMAIN_SUFFIX}/fullchain.pem -text | grep DNS:
 # 
