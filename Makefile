@@ -102,6 +102,6 @@ teardown:
 	@./scripts/babylon-integration/teardown.sh
 .PHONY: teardown
 
-dns-setup:
-	@./scripts/babylon-integration/dns-setup.sh
-.PHONY: dns-setup
+proxy-setup:
+	@./scripts/babylon-integration/proxy-setup.sh
+.PHONY: proxy-setup

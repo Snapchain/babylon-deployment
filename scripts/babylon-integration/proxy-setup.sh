@@ -52,3 +52,30 @@ sudo certbot certonly --nginx --non-interactive --agree-tos -m ${CERTBOT_EMAIL} 
   -d finality-rpc.${CERTBOT_DOMAIN_SUFFIX} \
   -d demo.${CERTBOT_DOMAIN_SUFFIX} \
   -d finality.${CERTBOT_DOMAIN_SUFFIX}
+
+# 3. create the nginx config files for each subdomain
+cp configs/nginx/finality-gadget-rpc.conf.template /etc/nginx/sites-available/finality-gadget-rpc.conf
+cp configs/nginx/demo-app.conf.template /etc/nginx/sites-available/demo-app.conf
+cp configs/nginx/finality-explorer.conf.template /etc/nginx/sites-available/finality-explorer.conf
+
+# 4. replace ${CERTBOT_DOMAIN_SUFFIX} in the nginx config files
+sed -i 's/\${CERTBOT_DOMAIN_SUFFIX}/'"${CERTBOT_DOMAIN_SUFFIX}"'/g' /etc/nginx/sites-available/*.conf
+
+# 5. enable the nginx config files
+mkdir -p /etc/nginx/sites-enabled
+ln -sf /etc/nginx/sites-available/finality-gadget-rpc.conf /etc/nginx/sites-enabled/
+ln -sf /etc/nginx/sites-available/demo-app.conf /etc/nginx/sites-enabled/
+ln -sf /etc/nginx/sites-available/finality-explorer.conf /etc/nginx/sites-enabled/
+
+# 6. verify the nginx config files
+nginx -t
+
+# 7. start nginx
+#
+# after running this, you can check the status of nginx by:
+# systemctl status nginx
+# 
+# see logs
+# journalctl -u nginx.service -f
+systemctl start nginx
+systemctl enable nginx
