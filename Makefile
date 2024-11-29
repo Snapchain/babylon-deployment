@@ -95,7 +95,7 @@ register-consumer-chain:
 .PHONY: register-consumer-chain
 
 toggle-cw-killswitch:
-	@./scripts/babylon-integration/toggle-cw-killswitch.sh
+	@IS_ENABLED=$(ENABLE) ./scripts/babylon-integration/toggle-cw-killswitch.sh
 .PHONY: toggle-cw-killswitch
 
 teardown:
