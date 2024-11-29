@@ -7,7 +7,7 @@ if [ -z "${IS_ENABLED:-}" ]; then
     exit 1
 fi
 
-sed -i.bak "s|\${IS_ENABLED}|$IS_ENABLED|g" .env.babylon-integration
+sed -i.bak "s|IS_ENABLED=.*|IS_ENABLED=$IS_ENABLED|g" .env.babylon-integration
 rm .env.babylon-integration.bak
 
 # setting the finality contract enabled value
