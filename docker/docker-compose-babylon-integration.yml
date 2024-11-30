@@ -84,8 +84,8 @@ services:
 
   consumer-eotsmanager:
     container_name: consumer-eotsmanager
-    # https://github.com/babylonlabs-io/finality-provider/commit/45a24e1f5c235a829eaeca3c3336053032ec0088
-    image: babylonlabs/finality-provider:45a24e1f5c235a829eaeca3c3336053032ec0088
+    # https://github.com/babylonlabs-io/finality-provider/commit/5365d69585d829a087f21ee5e2f0e9a256a9f29b
+    image: babylonlabs/finality-provider:5365d69585d829a087f21ee5e2f0e9a256a9f29b
     command: eotsd start
     volumes:
       - ${PWD}/.consumer-eotsmanager:/home/finality-provider/.eotsd
@@ -97,8 +97,8 @@ services:
 
   consumer-finality-provider:
     container_name: consumer-finality-provider
-    # https://github.com/babylonlabs-io/finality-provider/commit/7d341b5d02e3f0e2b27a9a5c5e563a73a6601d50
-    image: babylonlabs/finality-provider:7d341b5d02e3f0e2b27a9a5c5e563a73a6601d50
+    # https://github.com/babylonlabs-io/finality-provider/commit/5365d69585d829a087f21ee5e2f0e9a256a9f29b
+    image: babylonlabs/finality-provider:5365d69585d829a087f21ee5e2f0e9a256a9f29b
     command: fpd start
     volumes:
       - ${PWD}/.consumer-finality-provider:/home/finality-provider/.fpd
@@ -112,8 +112,8 @@ services:
 
   finality-gadget:
     container_name: finality-gadget
-    # https://github.com/babylonlabs-io/finality-gadget/commit/8bdd24c7d32e7ffb8fe06cebcb571cb2ce52db12
-    image: babylonlabs/finality-gadget:8bdd24c7d32e7ffb8fe06cebcb571cb2ce52db12
+    # https://github.com/babylonlabs-io/finality-gadget/commit/4ffe20d1640658de81e0432626f505e240eaf064
+    image: babylonlabs/finality-gadget:4ffe20d1640658de81e0432626f505e240eaf064
     command: >
       opfgd start --cfg /home/finality-gadget/opfgd.toml
     ports:
@@ -127,7 +127,7 @@ services:
 
   finality-explorer:
     container_name: finality-explorer
-    image: snapchain/finality-explorer:sha-3ea3cc3
+    image: snapchain/finality-explorer:sha-7dfdc59
     ports:
       - "13000:3000"
     env_file:
