@@ -54,6 +54,7 @@ services:
       - -c
       - /toggle-cw-killswitch.sh
 
+  # This is a one-off container just for tearing down the Babylon integration
   teardown:
     container_name: teardown
     image: snapchain/babylon-deployment-utils:fdceb0c
