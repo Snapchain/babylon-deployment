@@ -86,7 +86,7 @@ services:
   consumer-eotsmanager:
     container_name: consumer-eotsmanager
     # https://github.com/babylonlabs-io/finality-provider/pull/213
-    image: babylonlabs/finality-provider:9fcbde4fdacd26de256a944dedacb645826c2e9e
+    image: babylonlabs/finality-provider:8e8384a11d63e8841c28fe746fd01ff9b585e831
     command: eotsd start
     volumes:
       - ${PWD}/.consumer-eotsmanager:/home/finality-provider/.eotsd
@@ -99,7 +99,7 @@ services:
   consumer-finality-provider:
     container_name: consumer-finality-provider
     # https://github.com/babylonlabs-io/finality-provider/pull/213
-    image: babylonlabs/finality-provider:9fcbde4fdacd26de256a944dedacb645826c2e9e
+    image: babylonlabs/finality-provider:8e8384a11d63e8841c28fe746fd01ff9b585e831
     command: fpd start
     volumes:
       - ${PWD}/.consumer-finality-provider:/home/finality-provider/.fpd
